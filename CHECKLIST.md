@@ -5,17 +5,17 @@
 ## Pre-Deployment
 
 - [x] Git repository initialized
-- [ ] Minimal db.json created
-- [ ] json-server installed as dev dependency
+- [x] Minimal db.json created
+- [x] json-server installed as dev dependency
 
 ---
 
 ## Deployment on VM
 
-- [ ] SSH into API Server
-- [ ] Clone repository
+- [x] SSH into API Server
+- [x] Clone repository
 - [ ] Install Node.js (if not installed)
-- [ ] Install dependencies (`npm install`)
+- [ ] Install dependencies (`pnpm install`)
 - [ ] Start json-server (`npx json-server --watch db.json --port 3000`)
 - [ ] (Optional) Setup systemd or PM2 service
 

@@ -5,8 +5,9 @@
 This is the backend for the RealEstateSaaS project.
 
 Built initially with:
-- json-server (mock API)
+- json-server (mock API server)
 - Modular GitOps deployment standards
+- PNPM package manager for faster installs
 
 Planned future upgrades:
 - Node.js + Express full backend
@@ -15,19 +16,33 @@ Planned future upgrades:
 
 ## Development Setup
 
-1. Clone the repository:
+1. Install Node.js on your machine or VM:
+```bash
+sudo apt update
+sudo apt install nodejs npm -y
+```
+
+2. Install pnpm globally:
+```bash
+sudo npm install -g pnpm
+```
+
+3. Clone the repository:
 ```bash
 git clone git@github.com:Penace/realestatesaas-backend.git
 ```
 
-2. Install dependencies:
+4. Install project dependencies:
 ```bash
+cd realestatesaas-backend
 pnpm install
 ```
-3. Start API server (json-server example):
+
+5. Start API server (json-server example):
 ```bash
 npx json-server --watch db.json --port 3000
 ```
+
 ---
 
 ## Project Architecture
@@ -35,7 +50,7 @@ npx json-server --watch db.json --port 3000
 | Area | Stack |
 |:---|:---|
 | Mock API | json-server |
-| Deployment | GitOps (clone + start service) |
+| Deployment | GitOps (clone + run service) |
 | Future | Expand to real Node.js backend |
 
 ---
@@ -46,4 +61,8 @@ See [ROADMAP.md](./ROADMAP.md)
 
 ---
 
-✅ This backend is designed for modular VM deployment under GitOps control.
+## Additional Resources
+
+- [RealEstateSaaS Frontend Repo](https://github.com/Penace/realestatesaas-frontend)
+
+---
