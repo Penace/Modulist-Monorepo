@@ -32,7 +32,7 @@ sudo npm install -g pnpm
 git clone git@github.com:Penace/realestatesaas-backend.git
 ```
 
-4. Install project dependencies:
+4. Install project dependencies:DONT RUN! no package.json yet.
 ```bash
 cd realestatesaas-backend
 pnpm install
@@ -40,9 +40,9 @@ pnpm install
 
 5. Start API server (json-server example):
 ```bash
-npx json-server --watch db.json --port 3000
+npx json-server --host 0.0.0.0 --watch db.json --port 3000
 ```
-
+>Note: Add `--host 0.0.0.0` flag if hosting on VM to access from other devices on network.
 ---
 
 ## Project Architecture
