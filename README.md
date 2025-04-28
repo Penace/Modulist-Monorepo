@@ -17,12 +17,12 @@ Planned future upgrades:
 
 1. Clone the repository:
 ```bash
-git clone git@github.com:yourusername/realestatesaas-backend.git
+git clone git@github.com:Penace/realestatesaas-backend.git
 ```
 
 2. Install dependencies:
 ```bash
-npm install
+pnpm install
 ```
 3. Start API server (json-server example):
 ```bash
