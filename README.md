@@ -18,18 +18,16 @@ Planned future upgrades:
 1. Clone the repository:
 ```bash
 git clone git@github.com:yourusername/realestatesaas-backend.git
-/bash
+```
 
 2. Install dependencies:
 ```bash
 npm install
-/bash
-
+```
 3. Start API server (json-server example):
 ```bash
 npx json-server --watch db.json --port 3000
-/bash
-
+```
 ---
 
 ## Project Architecture
