@@ -40,9 +40,9 @@ pnpm install
 
 5. Start API server (json-server example):
 ```bash
-npx json-server --host 0.0.0.0 --watch db.json --port 3000
+pnpm run dev-server
 ```
->Note: Add `--host 0.0.0.0` flag if hosting on VM to access from other devices on network.
+>Note: package.json script, `npx json-server --watch db.json --port 3000 --host 0.0.0.0`
 ---
 
 ## Project Architecture
