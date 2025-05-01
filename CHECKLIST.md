@@ -1,62 +1,52 @@
-# RealEstateSaaS Backend – Deployment Checklist
+# RealEstateSaaS Backend – Deployment & Development Checklist
 
 ---
 
-## Pre-Deployment
+## 🧱 Setup & Environment
 
-- [x] Git repository initialized
-- [x] Minimal db.json created
-- [x] json-server installed as dev dependency
-
----
-
-## Deployment on VM
-
-- [x] SSH into API Server
-- [x] Clone repository
-- [x] Install Node.js (if not installed)
-- [x] Install dependencies (`pnpm install`)
-- [x] Start json-server (`npx json-server --watch db.json --port 3000`)
-- [ ] (Optional) Setup systemd or PM2 service
+- [x] PNPM project initialized
+- [x] Core dependencies installed (`express`, `mongoose`, `cors`, `dotenv`, `morgan`)
+- [x] Dev tools installed (`nodemon`)
+- [x] `.env` file created with MongoDB URI
+- [x] MongoDB connection tested
+- [x] Backend runs on `http://localhost:4000`
 
 ---
 
-## Final Checks
+## 📦 API Architecture (Express + MongoDB)
 
-- [x] API reachable via API Server Static IP
-- [x] JSON data served on `http://<api-server-ip>:3000`
+### Listings
+- [x] Listing model created
+- [x] Routes: GET /api/listings, GET /api/listings/:id
+- [x] Pending routes: POST /api/pending, POST /api/pending/:id/approve
+- [x] Controller modularized
 
-✅ Backend operational on API Server VM.
+### Users
+- [x] User model created (name, email, role, approved, etc.)
+- [x] Routes: GET /api/users, GET /api/users/:id, POST /api/users
+- [x] PATCH /api/users/:id/approve (admin moderation)
+- [x] Controller modularized
+- [x] Validations: required, enum, unique, etc.
 
 ---
-# RealEstateSaaS Backend – Expansion Checklist (Node + MongoDB)
 
-## Phase 1: Environment Setup
-- [ ] Initialize PNPM project (`pnpm init`)
-- [ ] Install core dependencies (`express`, `mongoose`, `cors`, `dotenv`, `morgan`)
-- [ ] Install dev tools (`nodemon`)
-- [ ] Create `.env` file with MongoDB URI
-- [ ] Create `server.js` entry point
-- [ ] Test connection to MongoDB
+## 🧪 Testing & Integration
 
-## Phase 2: API Architecture
-- [ ] Create `models/Listing.js`
-- [ ] Create `routes/listingRoutes.js`
-- [ ] Create `controllers/listingController.js`
-- [ ] Setup `GET /api/listings`
-- [ ] Setup `GET /api/listings/:id`
-- [ ] Setup `POST /api/listings`
+- [x] API manually tested (curl/Postman)
+- [x] MongoDB data verified via `mongosh`
+- [x] Frontend connected via REST
 
-## Phase 3: Frontend Integration
-- [ ] Update `api.js` to point to Express endpoints
-- [ ] Test full CRUD flow from frontend
-- [ ] Replace json-server dependency
+---
 
-## Phase 4: Deployment
-- [ ] Install Node.js on API VM (if needed)
-- [ ] Clone backend repo to VM
-- [ ] Setup `.env` and install dependencies
-- [ ] Run with `pm2` or systemd
-- [ ] Confirm availability via static IP
+## 🖥️ VM Deployment
+
+- [x] SSH into API VM
+- [x] Clone backend repo
+- [x] Install Node.js + PNPM
+- [x] Install dependencies
+- [ ] (Optional) Add PM2 or systemd for persistent deployment
+- [x] Test server availability via static IP
+
+---
 
 > “This is not just a backend. It’s a living API layer built for trace evolution.”

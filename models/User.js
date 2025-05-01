@@ -29,7 +29,18 @@ const userSchema = new mongoose.Schema({
   },
   currency: {
     type: String,
-    enum: ["USD", "EUR", "GBP", "ILS", "AED"],
+    enum: [
+      "USD",
+      "EUR",
+      "GBP",
+      "ILS",
+      "AED",
+      "CAD",
+      "AUD",
+      "CHF",
+      "JPY",
+      "CNY",
+    ],
     default: "USD",
     required: true,
   },
@@ -50,4 +61,4 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-export default mongoose.model("User", userSchema);
+export default mongoose.models.User || mongoose.model("User", userSchema);

@@ -5,14 +5,18 @@ import {
   createUser,
   approveUser,
   deleteUser,
+  getUserByEmail,
+  rejectUser,
 } from "../controllers/userController.js";
 
 const router = express.Router();
 
-router.get("/", getAllUsers);
-router.get("/:id", getUserById);
-router.post("/", createUser);
-router.patch("/:id/approve", approveUser);
-router.delete("/:id", deleteUser);
+router.get("/", getAllUsers); // List all users
+router.get("/email/:email", getUserByEmail); // Find user by email
+router.get("/:id", getUserById); // Get user by ID
+router.post("/", createUser); // Create user
+router.patch("/:id/approve", approveUser); // ✅ Approve user
+router.patch("/:id/reject", rejectUser); // ✅ Reject user
+router.delete("/:id", deleteUser); // Delete user
 
 export default router;

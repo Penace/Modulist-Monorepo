@@ -47,6 +47,21 @@ export const approveUser = async (req, res) => {
   }
 };
 
+// PATCH reject user
+export const rejectUser = async (req, res) => {
+  try {
+    const user = await User.findByIdAndUpdate(
+      req.params.id,
+      { approved: false },
+      { new: true }
+    );
+    if (!user) return res.status(404).json({ message: "User not found" });
+    res.status(200).json(user);
+  } catch (err) {
+    res.status(500).json({ message: "Rejection failed", error: err });
+  }
+};
+
 // DELETE user
 export const deleteUser = async (req, res) => {
   try {
@@ -55,5 +70,19 @@ export const deleteUser = async (req, res) => {
     res.status(200).json({ message: "User deleted", user: removed });
   } catch (err) {
     res.status(500).json({ message: "User deletion failed", error: err });
+  }
+};
+
+// GET user by email
+export const getUserByEmail = async (req, res) => {
+  console.log("Looking for email:", req.params.email);
+  try {
+    const user = await User.findOne({ email: req.params.email });
+    if (!user) return res.status(404).json({ message: "User not found" });
+    res.status(200).json(user);
+  } catch (err) {
+    res
+      .status(500)
+      .json({ message: "Error fetching user by email", error: err });
   }
 };

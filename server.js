@@ -6,6 +6,8 @@ import dotenv from "dotenv";
 import listingRoutes from "./routes/listingRoutes.js";
 import pendingListingRoutes from "./routes/pendingListingRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
+import settingsRoutes from "./routes/settingsRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
 
 dotenv.config();
 
@@ -21,16 +23,21 @@ app.use(express.json());
 app.use("/api/listings", listingRoutes);
 app.use("/api/pending", pendingListingRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/settings", settingsRoutes);
+app.use("/api/admin", adminRoutes);
+
+// Basic route test (runs even if DB fails)
+app.get("/test", (req, res) => {
+  res.send("✅ API is up");
+});
 
 // MongoDB Connection
 mongoose
-  .connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(process.env.MONGO_URI)
   .then(() => {
     console.log("✅ Connected to MongoDB");
-    console.log(mongoose.modelNames());
+    console.log("Registered Models:", mongoose.modelNames());
+
     app.listen(PORT, () => {
       console.log(`🚀 Server running on http://localhost:${PORT}`);
     });
