@@ -28,6 +28,7 @@ mongoose
   })
   .then(() => {
     console.log("✅ Connected to MongoDB");
+    console.log(mongoose.modelNames());
     app.listen(PORT, () => {
       console.log(`🚀 Server running on http://localhost:${PORT}`);
     });
