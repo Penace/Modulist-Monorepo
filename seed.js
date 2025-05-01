@@ -1,18 +1,24 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import Listing from "./models/Listing.js"; // adjust path if needed
 import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+import Listing from "./models/Listing.js";
 
 dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const dbPath = path.join(__dirname, "db.json");
+const raw = fs.readFileSync(dbPath, "utf8");
+const { listings } = JSON.parse(raw);
+
+const cleanListings = listings.map(({ id, ...rest }) => rest);
+
 await mongoose.connect(process.env.MONGO_URI);
+await Listing.deleteMany(); // Optional: clear existing
+await Listing.insertMany(cleanListings);
 
-const dbJson = JSON.parse(fs.readFileSync("./db.json", "utf8"));
-
-const listings = dbJson.listings.map((l) => {
-  const { id, ...rest } = l;
-  return rest;
-});
-
-await Listing.insertMany(listings);
 console.log("✅ Listings seeded.");
 process.exit();
