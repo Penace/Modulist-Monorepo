@@ -5,6 +5,7 @@ import morgan from "morgan";
 import dotenv from "dotenv";
 import listingRoutes from "./routes/listingRoutes.js";
 import pendingListingRoutes from "./routes/pendingListingRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
 
 dotenv.config();
 
@@ -19,6 +20,7 @@ app.use(express.json());
 // Routes
 app.use("/api/listings", listingRoutes);
 app.use("/api/pending", pendingListingRoutes);
+app.use("/api/users", userRoutes);
 
 // MongoDB Connection
 mongoose
