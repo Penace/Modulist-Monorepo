@@ -7,6 +7,11 @@ const listingSchema = new mongoose.Schema({
   images: { type: [String], required: true }, // Changed from 'image' to 'images' array
   description: { type: String },
   createdAt: { type: Date, default: Date.now },
+  tag: {
+    type: String,
+    enum: ["featured", "auction", "sponsored", null],
+    default: null,
+  },
 });
 
 export default mongoose.models.Listing ||

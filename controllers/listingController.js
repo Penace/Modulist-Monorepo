@@ -4,7 +4,11 @@ import Listing from "../models/Listing.js";
 // GET all listings
 export const getAllListings = async (req, res) => {
   try {
-    const listings = await Listing.find();
+    const query = {};
+    if (req.query.tag) {
+      query.tag = req.query.tag;
+    }
+    const listings = await Listing.find(query);
     res.status(200).json(listings);
   } catch (error) {
     res.status(500).json({ message: "Error fetching listings", error });
