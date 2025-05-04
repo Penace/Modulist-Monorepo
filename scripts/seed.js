@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import Listing from "./models/Listing.js";
+import Listing from "../models/Listing.js";
 
 dotenv.config();
 

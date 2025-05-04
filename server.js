@@ -8,6 +8,7 @@ import pendingListingRoutes from "./routes/pendingListingRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import settingsRoutes from "./routes/settingsRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
+import uploadRouter from "./routes/uploads.js";
 
 dotenv.config();
 
@@ -25,6 +26,8 @@ app.use("/api/pending", pendingListingRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/settings", settingsRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/uploads", uploadRouter);
+app.use("/uploads/optimized", express.static("uploads/optimized"));
 
 // Basic route test (runs even if DB fails)
 app.get("/test", (req, res) => {
