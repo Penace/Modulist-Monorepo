@@ -4,7 +4,6 @@ import cors from "cors";
 import morgan from "morgan";
 import dotenv from "dotenv";
 import listingRoutes from "./routes/listingRoutes.js";
-import pendingListingRoutes from "./routes/pendingListingRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import settingsRoutes from "./routes/settingsRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
@@ -22,7 +21,6 @@ app.use(express.json());
 
 // Routes
 app.use("/api/listings", listingRoutes);
-app.use("/api/pending", pendingListingRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/settings", settingsRoutes);
 app.use("/api/admin", adminRoutes);

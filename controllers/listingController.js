@@ -8,6 +8,9 @@ export const getAllListings = async (req, res) => {
     if (req.query.tag) {
       query.tag = req.query.tag;
     }
+    if (req.query.status) {
+      query.status = req.query.status;
+    }
     const listings = await Listing.find(query);
     res.status(200).json(listings);
   } catch (error) {
@@ -33,7 +36,11 @@ export const getListingById = async (req, res) => {
 // POST new listing
 export const createListing = async (req, res) => {
   try {
-    const newListing = new Listing(req.body);
+    const data = {
+      ...req.body,
+      status: req.body.status || "draft",
+    };
+    const newListing = new Listing(data);
     const savedListing = await newListing.save();
     res.status(201).json(savedListing);
   } catch (error) {
