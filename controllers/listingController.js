@@ -35,11 +35,17 @@ export const getListingById = async (req, res) => {
 
 // POST new listing
 export const createListing = async (req, res) => {
+  console.log("Creating listing with data:", req.body);
   try {
     const data = {
       ...req.body,
       status: req.body.status || "draft",
     };
+    if (data.images && Array.isArray(data.images)) {
+      data.images = data.images.map((img) =>
+        typeof img === "string" ? img.replace(/([^:]\/)\/+/g, "$1") : img
+      );
+    }
     const newListing = new Listing(data);
     const savedListing = await newListing.save();
     res.status(201).json(savedListing);
@@ -51,6 +57,11 @@ export const createListing = async (req, res) => {
 // PATCH update listing
 export const updateListing = async (req, res) => {
   console.log("Updating listing ID:", req.params.id);
+  if (req.body.images && Array.isArray(req.body.images)) {
+    req.body.images = req.body.images.map((img) =>
+      typeof img === "string" ? img.replace(/([^:]\/)\/+/g, "$1") : img
+    );
+  }
   try {
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
       return res.status(400).json({ message: "Invalid listing ID format" });

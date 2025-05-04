@@ -15,7 +15,12 @@ router.get("/", getAllListings);
 router.get("/:id", getListingById);
 router.get("/status/:status", async (req, res) => {
   try {
-    const listings = await Listing.find({ status: req.params.status });
+    const query = { status: req.params.status };
+    if (req.query.userId) {
+      query.createdBy = req.query.userId;
+    }
+
+    const listings = await Listing.find(query);
     res.status(200).json(listings);
   } catch (error) {
     res
