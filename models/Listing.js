@@ -15,7 +15,7 @@ const listingSchema = new mongoose.Schema({
   parkingAvailable: { type: String, required: true },
   amenities: { type: [String], required: true },
   listingType: {
-    type: string,
+    type: String,
     enum: ["sale", "rent", "auction"],
     required: true,
   },
