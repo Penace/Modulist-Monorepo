@@ -23,6 +23,16 @@ const listingSchema = new mongoose.Schema({
     required: true,
   },
   availableFrom: { type: Date },
+  status: {
+    type: String,
+    enum: ["draft", "published", "archived"],
+    default: "published",
+  },
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: false,
+  },
 
   createdAt: { type: Date, default: Date.now },
   tag: {

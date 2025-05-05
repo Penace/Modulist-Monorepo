@@ -37,16 +37,24 @@ export const getListingById = async (req, res) => {
 export const createListing = async (req, res) => {
   console.log("Creating listing with data:", req.body);
   try {
-    const data = {
-      ...req.body,
-      status: req.body.status || "draft",
-    };
+    const data = { ...req.body };
+    if (!data.status) data.status = "draft";
+    if (req.user && req.user._id) {
+      data.createdBy = req.user._id;
+    }
     if (data.images && Array.isArray(data.images)) {
       data.images = data.images.map((img) =>
         typeof img === "string" ? img.replace(/([^:]\/)\/+/g, "$1") : img
       );
     }
+    console.log("Final listing data before save:", data);
     const newListing = new Listing(data);
+    const validationError = newListing.validateSync();
+    if (data.status !== "draft" && validationError) {
+      return res
+        .status(400)
+        .json({ message: "Validation failed", error: validationError });
+    }
     const savedListing = await newListing.save();
     res.status(201).json(savedListing);
   } catch (error) {
@@ -99,5 +107,83 @@ export const deleteListing = async (req, res) => {
     res.status(200).json({ message: "Listing deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: "Error deleting listing", error });
+  }
+};
+
+// GET listings by status and userId
+export const getListingsByStatus = async (req, res) => {
+  try {
+    const status = req.params.status;
+    const userId = req.query.userId;
+    if (!status || !userId) {
+      return res
+        .status(400)
+        .json({ message: "Missing status or userId query parameters" });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: "Invalid userId format" });
+    }
+
+    const listings = await Listing.find({
+      status,
+      createdBy: new mongoose.Types.ObjectId(userId),
+    });
+
+    res.status(200).json(listings);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error fetching listings by status", error });
+  }
+};
+
+// PATCH approve listing by ID
+export const approveListing = async (req, res) => {
+  try {
+    const listingId = req.params.id;
+
+    if (!mongoose.Types.ObjectId.isValid(listingId)) {
+      return res.status(400).json({ message: "Invalid listing ID format" });
+    }
+
+    const updatedListing = await Listing.findByIdAndUpdate(
+      listingId,
+      { status: "approved" },
+      { new: true }
+    );
+
+    if (!updatedListing) {
+      return res.status(404).json({ message: "Listing not found" });
+    }
+
+    res.status(200).json(updatedListing);
+  } catch (error) {
+    res.status(500).json({ message: "Error approving listing", error });
+  }
+};
+
+// PATCH reject listing by ID
+export const rejectListing = async (req, res) => {
+  try {
+    const listingId = req.params.id;
+
+    if (!mongoose.Types.ObjectId.isValid(listingId)) {
+      return res.status(400).json({ message: "Invalid listing ID format" });
+    }
+
+    const updatedListing = await Listing.findByIdAndUpdate(
+      listingId,
+      { status: "rejected" },
+      { new: true }
+    );
+
+    if (!updatedListing) {
+      return res.status(404).json({ message: "Listing not found" });
+    }
+
+    res.status(200).json(updatedListing);
+  } catch (error) {
+    res.status(500).json({ message: "Error rejecting listing", error });
   }
 };
