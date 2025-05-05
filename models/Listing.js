@@ -1,26 +1,80 @@
 import mongoose from "mongoose";
 
 const listingSchema = new mongoose.Schema({
-  title: { type: String, required: true },
-  price: { type: Number, required: true },
-  location: { type: String, required: true },
-  bedrooms: { type: Number, required: true },
-  bathrooms: { type: Number, required: true },
-  squareFootage: { type: Number, required: true },
-  address: { type: String, required: true },
-  images: { type: [String], required: true }, // Changed from 'image' to 'images' array
+  title: {
+    type: String,
+    required: function () {
+      return this.status !== "draft";
+    },
+  },
+  price: {
+    type: Number,
+    required: function () {
+      return this.status !== "draft";
+    },
+  },
+  location: {
+    type: String,
+    required: function () {
+      return this.status !== "draft";
+    },
+  },
+  bedrooms: {
+    type: Number,
+    required: function () {
+      return this.status !== "draft";
+    },
+  },
+  bathrooms: {
+    type: Number,
+    required: function () {
+      return this.status !== "draft";
+    },
+  },
+  squareFootage: {
+    type: Number,
+    required: function () {
+      return this.status !== "draft";
+    },
+  },
+  address: {
+    type: String,
+    required: function () {
+      return this.status !== "draft";
+    },
+  },
+  images: {
+    type: [String],
+    required: function () {
+      return this.status !== "draft";
+    },
+  }, // Changed from 'image' to 'images' array
   description: { type: String },
-  bedrooms: { type: Number, required: true },
-  bathrooms: { type: Number, required: true },
-  squareFootage: { type: Number, required: true },
-  propertyType: { type: String, required: true },
+  propertyType: {
+    type: String,
+    required: function () {
+      return this.status !== "draft";
+    },
+  },
 
-  yearBuilt: { type: Number, required: true },
-  parkingAvailable: { type: String, required: true },
+  yearBuilt: {
+    type: Number,
+    required: function () {
+      return this.status !== "draft";
+    },
+  },
+  parkingAvailable: {
+    type: String,
+    required: function () {
+      return this.status !== "draft";
+    },
+  },
   listingType: {
     type: String,
     enum: ["sale", "rent", "auction"],
-    required: true,
+    required: function () {
+      return this.status !== "draft";
+    },
   },
   availableFrom: { type: Date },
   status: {
