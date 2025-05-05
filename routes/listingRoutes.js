@@ -9,13 +9,19 @@ import {
   approveListing,
   rejectListing,
 } from "../controllers/listingController.js";
-import Listing from "../models/Listing.js";
 
 const router = express.Router();
 
 // Routes
 router.get("/", getAllListings);
-router.get("/status/:status", getListingsByStatus);
+router.get(
+  "/status/:status",
+  (req, res, next) => {
+    req.status = req.params.status;
+    next();
+  },
+  getListingsByStatus
+);
 router.get("/:id", getListingById);
 router.post("/", createListing);
 router.patch("/:id", updateListing);

@@ -110,26 +110,28 @@ export const deleteListing = async (req, res) => {
   }
 };
 
-// GET listings by status and userId
+// GET listings by status (optional) and userId (required)
 export const getListingsByStatus = async (req, res) => {
   try {
     const status = req.params.status;
     const userId = req.query.userId;
-    if (!status || !userId) {
+
+    if (!userId) {
       return res
         .status(400)
-        .json({ message: "Missing status or userId query parameters" });
+        .json({ message: "Missing userId query parameter" });
     }
 
     if (!mongoose.Types.ObjectId.isValid(userId)) {
       return res.status(400).json({ message: "Invalid userId format" });
     }
 
-    const listings = await Listing.find({
-      status,
-      createdBy: new mongoose.Types.ObjectId(userId),
-    });
+    const query = { createdBy: new mongoose.Types.ObjectId(userId) };
+    if (status) {
+      query.status = status;
+    }
 
+    const listings = await Listing.find(query);
     res.status(200).json(listings);
   } catch (error) {
     res
