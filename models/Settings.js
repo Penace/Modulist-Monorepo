@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const settingSchema = new mongoose.Schema(
+const settingsSchema = new mongoose.Schema(
   {
     defaultCurrency: { type: String, default: "USD" },
     requireApproval: { type: Boolean, default: true },
@@ -9,5 +9,5 @@ const settingSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export default mongoose.models.Setting ||
-  mongoose.model("Setting", settingSchema);
+export default mongoose.models.Settings ||
+  mongoose.model("Settings", settingsSchema);

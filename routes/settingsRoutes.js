@@ -7,6 +7,6 @@ import {
 const router = express.Router();
 
 router.get("/", getSettings);
-router.patch("/", updateSettings);
+router.put("/", updateSettings);
 
 export default router;
