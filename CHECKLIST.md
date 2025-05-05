@@ -18,7 +18,7 @@
 ### Listings
 - [x] Listing model created
 - [x] Routes: GET /api/listings, GET /api/listings/:id
-- [x] Pending routes: POST /api/pending, POST /api/pending/:id/approve
+- [x] Approval system implemented via PATCH on listings
 - [x] Controller modularized
 
 ### Users
@@ -44,8 +44,16 @@
 - [x] Clone backend repo
 - [x] Install Node.js + PNPM
 - [x] Install dependencies
-- [ ] (Optional) Add PM2 or systemd for persistent deployment
+- [ ] Add PM2 or systemd for persistent deployment
 - [x] Test server availability via static IP
+
+---
+
+## 🔐 Middleware & Settings
+
+- [x] Role-based middleware (requireAdmin, requireAgent, requireAuth)
+- [x] Maintenance mode middleware
+- [x] Global settings system (currency, approval, maintenance)
 
 ---
 

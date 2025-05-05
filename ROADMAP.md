@@ -26,11 +26,21 @@
 
 ---
 
-## ⏳ Phase 4: Production Prep & Auth System
-- [ ] PM2 or systemd deployment (persistent daemon)
-- [ ] Add login endpoint (JWT or session-based)
-- [ ] Protect admin routes with middleware
-- [ ] Encrypt passwords (bcrypt or similar)
+## ✅ Phase 4: Authentication + Middleware
+- [x] Add login and signup endpoints (JWT)
+- [x] Create `requireAuth`, `requireAgent`, `requireAdmin` middleware
+- [x] Encrypt passwords using bcrypt
+- [x] Protect sensitive routes (admin, agent, draft saving, etc.)
+
+---
+
+## ⏳ Phase 5: Admin & Settings System
+- [x] Create `Settings.js` model and schema
+- [x] Add `/settings` routes and controller
+- [x] Create `checkMaintenanceMode` middleware
+- [ ] Implement currency system (use setting in price display)
+- [ ] Add live toggles for maintenance mode and approvals
+- [ ] Build logging/analytics endpoints
 
 ---
 

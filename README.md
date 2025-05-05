@@ -7,8 +7,10 @@ It now uses a modular Express + MongoDB architecture with full support for:
 
 - Listings and pending approvals
 - User registration and moderation
+- Settings management and middleware auth checks
 - RESTful API integration
 - Admin tools and seed scripts
+- Production-grade modularity and scalability
 
 Previously started with `json-server` for prototyping.  
 Now fully transitioned to production-ready Node.js backend.
@@ -22,7 +24,10 @@ Now fully transitioned to production-ready Node.js backend.
 ├── routes/             # Express route modules
 ├── controllers/        # Modular route logic
 ├── config/             # MongoDB connection setup
-├── seed.js             # Listing data seeder
+├── middleware/         # Authentication and other middleware
+├── uploads/            # Uploaded files storage
+├── archive/            # Archived logic and scripts
+│   └── scripts/        # Seed scripts and legacy utilities
 ├── server.js           # Express entry point
 ├── .env                # Environment variables
 
@@ -30,15 +35,22 @@ Now fully transitioned to production-ready Node.js backend.
 
 ## API Endpoints
 
-| Method | Route                           | Description                   |
-|--------|----------------------------------|-------------------------------|
-| GET    | /api/listings                   | List all published properties |
-| GET    | /api/listings/:id               | View one property             |
-| POST   | /api/pending                    | Submit listing for approval   |
-| POST   | /api/pending/:id/approve        | Admin approves a listing      |
-| GET    | /api/users                      | List all users (admin only)   |
-| POST   | /api/users                      | Register new user             |
-| PATCH  | /api/users/:id/approve          | Admin approves a user         |
+| Method | Route                                   | Description                                |
+|--------|-----------------------------------------|--------------------------------------------|
+| GET    | /api/listings                           | Get all listings (filter status in client) |
+| GET    | /api/listings/:id                       | Get a listing by ID                        |
+| POST   | /api/listings                           | Create a new listing                       |
+| PATCH  | /api/listings/:id                       | Update a listing by ID                     |
+| DELETE | /api/listings/:id                       | Delete a listing by ID                     |
+| GET    | /api/users                              | Get all users (admin only)                 |
+| GET    | /api/users/:id                          | Get a user by ID                           |
+| POST   | /api/users                              | Register a new user                        |
+| PATCH  | /api/users/:id                          | Update a user                              |
+| PATCH  | /api/users/:id/approve                  | Approve a user                             |
+| DELETE | /api/users/:id                          | Delete a user                              |
+| GET    | /api/settings                           | Fetch global settings                      |
+| PATCH  | /api/settings                           | Update global settings (admin only)        |
+| GET    | /uploads/optimized/:filename            | Serve optimized uploads                    |
 
 ---
 ## Development Setup
@@ -62,18 +74,36 @@ cp .env.example .env
 # Edit with your MongoDB URI
 ```
 
-4. Install and run:
+4. Install dependencies:
 ```bash
 pnpm install
+```
+
+5. Run the server:
+- For development (if available):
+```bash
+pnpm dev
+```
+- For production:
+```bash
 node server.js
 ```
+
+6. (Optional) Seed mock data if needed:
+```bash
+node archive/scripts/seed.js
+```
+
 ---
 ## **Status**  
-✅ Fully functional REST API
-⚙️ Ready for frontend integration and future auth layer
+✅ Fully functional REST API  
+🔒 Integrated with frontend and role-based middleware
 
 ---
 ## **Roadmap**
+- Implement role-based restrictions on all routes  
+- Add request logging middleware  
+- Connect with platform-wide VITE_IMAGE_BASE_URL config  
 See [ROADMAP.md](./ROADMAP.md)
 
 ---
