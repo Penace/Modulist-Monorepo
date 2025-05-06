@@ -1,3 +1,4 @@
+import Listing from "../models/Listing.js";
 import express from "express";
 import {
   getAllListings,
@@ -8,6 +9,7 @@ import {
   deleteListing,
   approveListing,
   rejectListing,
+  checkDuplicateDraft,
 } from "../controllers/listingController.js";
 
 const router = express.Router();
@@ -30,5 +32,8 @@ router.delete("/:id", deleteListing);
 // Additional routes for managing listing statuses (drafts, approvals)
 router.post("/:id/approve", approveListing);
 router.post("/:id/reject", rejectListing);
+
+// Route to check for duplicate draft listing by slug and userId
+router.get("/check-duplicate-draft", checkDuplicateDraft);
 
 export default router;

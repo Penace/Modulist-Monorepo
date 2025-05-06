@@ -47,6 +47,39 @@ export const createListing = async (req, res) => {
         typeof img === "string" ? img.replace(/([^:]\/)\/+/g, "$1") : img
       );
     }
+    // Clean draft fields if status is draft
+    if (data.status === "draft") {
+      const cleanDraftFields = [
+        "location",
+        "price",
+        "description",
+        "images",
+        "address",
+        "bedrooms",
+        "bathrooms",
+        "squareFootage",
+        "propertyType",
+        "yearBuilt",
+        "parkingAvailable",
+        "listingType",
+        "availableFrom",
+        "features",
+        "amenities",
+        "facilities",
+        "slug",
+      ];
+
+      cleanDraftFields.forEach((field) => {
+        if (
+          data[field] === "" ||
+          data[field] === undefined ||
+          data[field] === null ||
+          (Array.isArray(data[field]) && data[field].length === 0)
+        ) {
+          delete data[field];
+        }
+      });
+    }
     console.log("Final listing data before save:", data);
     const newListing = new Listing(data);
     const validationError = newListing.validateSync();
@@ -187,5 +220,34 @@ export const rejectListing = async (req, res) => {
     res.status(200).json(updatedListing);
   } catch (error) {
     res.status(500).json({ message: "Error rejecting listing", error });
+  }
+};
+
+// GET check for duplicate draft by slug, title, or address and createdBy
+export const checkDuplicateDraft = async (req, res) => {
+  try {
+    const { slug, title, address, createdBy } = req.query;
+
+    if (!createdBy || (!slug && !title && !address)) {
+      return res
+        .status(400)
+        .json({ message: "Missing required query parameters" });
+    }
+
+    const conditions = [{ status: "draft" }, { createdBy }];
+
+    const orConditions = [];
+    if (slug) orConditions.push({ slug });
+    if (title) orConditions.push({ title });
+    if (address) orConditions.push({ address });
+
+    const existing = await Listing.findOne({
+      $and: conditions,
+      $or: orConditions,
+    });
+
+    return res.status(200).json({ exists: !!existing });
+  } catch (error) {
+    res.status(500).json({ message: "Error checking duplicate draft", error });
   }
 };
