@@ -8,25 +8,30 @@ const router = express.Router();
 const upload = multer({ dest: "uploads/raw/" });
 console.log("📥 Upload route mounted");
 
-router.post("/", upload.single("image"), async (req, res) => {
+router.post("/", upload.array("images"), async (req, res) => {
   try {
-    const inputPath = req.file.path;
-    const baseName = path.parse(req.file.originalname).name;
-    const filename = `${Date.now()}-${baseName}.webp`;
-    const outputPath = path.join("uploads/optimized", filename);
+    const processedImages = [];
 
-    await sharp(inputPath)
-      .resize({ width: 1920 }) // Resize for consistency
-      .toFormat("webp")
-      .webp({ quality: 80 })
-      .toFile(outputPath);
+    for (const file of req.files) {
+      const inputPath = file.path;
+      const baseName = path.parse(file.originalname).name;
+      const filename = `${Date.now()}-${baseName}.webp`;
+      const outputPath = path.join("uploads/optimized", filename);
 
-    fs.unlinkSync(inputPath); // Remove raw file
+      await sharp(inputPath)
+        .resize({ width: 1920 })
+        .toFormat("webp")
+        .webp({ quality: 80 })
+        .toFile(outputPath);
 
-    res.json({ url: `/uploads/optimized/${filename}` });
+      fs.unlinkSync(inputPath); // Remove raw file
+      processedImages.push(`/uploads/optimized/${filename}`);
+    }
+
+    res.json({ urls: processedImages });
   } catch (err) {
     console.error("Image processing error:", err);
-    res.status(500).json({ error: "Failed to process image" });
+    res.status(500).json({ error: "Failed to process images" });
   }
 });
 

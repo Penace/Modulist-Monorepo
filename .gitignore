@@ -23,3 +23,6 @@ Thumbs.db
 # IDE folders
 .vscode/
 .idea/
+
+# Archive/Deprecated
+archive
