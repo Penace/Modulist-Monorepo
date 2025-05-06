@@ -1,4 +1,4 @@
-import { createListing } from "../services/api";
+import { createListing, checkDuplicateDraft } from "../services/api";
 import { useState, useEffect } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { getListingById, updateListing } from "../services/api";
@@ -322,15 +322,17 @@ export default function Publish() {
           storageKey={storageKey}
           draftId={draftId}
           navigate={navigate}
-          setReviewData={(reviewData) =>
-            setFormData({ ...formData, reviewData })
-          }
+          setReviewData={(reviewData) => {
+            const sanitized = { ...reviewData };
+            delete sanitized.reviewData;
+            setFormData((prev) => ({ ...prev, reviewData: sanitized }));
+          }}
           setShowReviewModal={openModal}
           setImagesForReview={(images) => {
             setFormData((prev) => ({ ...prev, reviewImages: images }));
           }}
           setSubmitting={setSubmitting}
-          handleSaveDraft={(data) => {
+          handleSaveDraft={async (data) => {
             const {
               formData,
               user,
@@ -344,30 +346,61 @@ export default function Publish() {
               toast("You must be logged in to save a draft.", "error");
               return;
             }
+
             setSubmitting(true);
-            optimizeAndUploadImages(formData.images)
-              .then((uploadedImages) => {
-                const draftData = {
-                  ...formData,
-                  images: uploadedImages,
-                  isDraft: true,
-                  userId: user._id,
-                };
-                return isEditMode && listingId
-                  ? updateListing(listingId, draftData)
-                  : createListing(draftData);
-              })
-              .then((res) => {
-                toast("Draft saved successfully!", "success");
-                navigate(`/agent-dashboard?tab=drafts`);
-              })
-              .catch((err) => {
-                console.error("Failed to save draft:", err);
-                toast("Failed to save draft. Try again.", "error");
-              })
-              .finally(() => {
-                setSubmitting(false);
-              });
+            formData.price = Number(
+              String(formData.price).replace(/[^\d.-]/g, "")
+            );
+            formData.listingType = String(formData.listingType).toLowerCase();
+
+            try {
+              if (!isEditMode) {
+                const isDuplicate = await checkDuplicateDraft(
+                  formData.slug,
+                  user._id
+                );
+                if (isDuplicate) {
+                  toast("A draft with this slug already exists.", "error");
+                  setSubmitting(false);
+                  return;
+                }
+              }
+
+              const uploadedImages = await optimizeAndUploadImages(
+                formData.images
+              );
+              const imageURLs = Array.isArray(uploadedImages)
+                ? uploadedImages.filter(
+                    (img) => typeof img === "string" && img.startsWith("http")
+                  )
+                : [];
+
+              const draftData = {
+                ...formData,
+                images: imageURLs,
+                isDraft: true,
+                createdBy: user._id,
+                status: "draft",
+              };
+
+              const res =
+                isEditMode && listingId
+                  ? await updateListing(listingId, draftData)
+                  : await createListing(draftData);
+
+              if (!res || res.error || res.status >= 400) {
+                throw new Error("Server rejected the draft");
+              }
+
+              toast("Draft saved successfully!", "success");
+              localStorage.removeItem("newListingDraftForm");
+              navigate(`/agent-dashboard?tab=drafts`);
+            } catch (err) {
+              console.error("Failed to save draft:", err);
+              toast("Failed to save draft. Try again.", "error");
+            } finally {
+              setSubmitting(false);
+            }
           }}
         />
       </div>

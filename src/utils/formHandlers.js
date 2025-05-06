@@ -174,12 +174,74 @@ export const handleSaveDraft = async ({
   try {
     setSubmitting(true);
 
+    const duplicateCheckRes = await fetch(
+      `/api/listings/check-duplicate-draft?title=${encodeURIComponent(
+        formData.title
+      )}&userId=${user._id}`
+    );
+    if (duplicateCheckRes.ok) {
+      const { exists } = await duplicateCheckRes.json();
+      if (exists) {
+        toast.error("A draft with this title already exists.");
+        setSubmitting(false);
+        return;
+      }
+    } else {
+      console.warn("⚠️ Duplicate check failed.");
+    }
+
+    // Sanitize fields that must match enum values
+    const cleanedFormData = {
+      ...formData,
+    };
+
+    // Fill empty fields with placeholder values to pass schema validation
+    const placeholderValues = {
+      location: "Draft Location",
+      address: "Draft Address",
+      description: "Draft Description",
+      bedrooms: 1,
+      bathrooms: 1,
+      squareFootage: 1,
+      propertyType: "Unknown",
+      yearBuilt: 2000,
+      parkingAvailable: "Unknown",
+      listingType: "sale",
+      availableFrom: new Date().toISOString(),
+      features: [],
+      amenities: [],
+      facilities: [],
+      slug: `draft-${Date.now()}`,
+    };
+
+    for (const [key, value] of Object.entries(placeholderValues)) {
+      if (
+        cleanedFormData[key] === undefined ||
+        cleanedFormData[key] === null ||
+        cleanedFormData[key] === ""
+      ) {
+        cleanedFormData[key] = value;
+      }
+    }
+
+    const listingTypeRaw = (formData.listingType || "")
+      .toString()
+      .trim()
+      .toLowerCase();
+    const validListingTypes = ["sale", "rent", "auction"];
+
+    if (validListingTypes.includes(listingTypeRaw)) {
+      cleanedFormData.listingType = listingTypeRaw;
+    } else {
+      delete cleanedFormData.listingType;
+    }
+
     const images = formData.images?.length
       ? await optimizeAndUploadImages(formData.images)
       : [];
 
     const payload = {
-      ...formData,
+      ...cleanedFormData,
       images,
       createdBy: user._id,
       status: "draft",

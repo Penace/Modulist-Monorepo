@@ -1,5 +1,3 @@
-// src/utils/imageUpload.js
-
 /**
  * Optimize image file name and upload to backend
  * @ param {File[]} files - array of File objects
@@ -7,6 +5,7 @@
  */
 export async function optimizeAndUploadImages(files) {
   const uploadedUrls = [];
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000/api";
 
   for (const file of files) {
     const formData = new FormData();
@@ -18,15 +17,19 @@ export async function optimizeAndUploadImages(files) {
 
     formData.append("images", renamedFile);
 
-    const res = await fetch("/api/uploads", {
+    const res = await fetch(`${import.meta.env.VITE_API_URL}/uploads`, {
       method: "POST",
       body: formData,
     });
 
-    if (!res.ok) throw new Error("Image upload failed");
+    if (!res.ok) {
+      const errorText = await res.text();
+      console.error("❌ Upload response error:", errorText);
+      throw new Error("Image upload failed");
+    }
 
-    const { url } = await res.json();
-    uploadedUrls.push(url);
+    const { urls } = await res.json();
+    uploadedUrls.push(...urls);
   }
 
   return uploadedUrls;

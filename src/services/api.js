@@ -1,3 +1,4 @@
+import { normalizeSlug } from "../utils/normalize"; // Adjust path if needed
 const API_URL =
   import.meta.env.VITE_API_URL ||
   `${window.location.protocol}//${window.location.hostname}:4000/api`;
@@ -55,11 +56,24 @@ export async function fetchListingsByStatus(status, userId) {
 
 // --- Publish
 export async function createListing(listingData) {
-  return fetchWithHandling(`${API_URL}/listings`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(listingData),
-  });
+  try {
+    const res = await fetch(`${API_URL}/listings`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(listingData),
+    });
+
+    if (!res.ok) {
+      const errorText = await res.text();
+      console.error("API Fetch Error:", res.status, "-", errorText);
+      throw new Error(`Fetch failed: ${res.status}`);
+    }
+
+    return await res.json();
+  } catch (error) {
+    console.error("API Error:", error.message);
+    throw error;
+  }
 }
 
 export async function deleteListing(id) {
@@ -198,4 +212,20 @@ export async function updateSettings(settings) {
 
 export async function getSettings() {
   return fetchWithHandling(`${API_URL}/settings`, {}, {});
+}
+
+// Check for existing draft listing by normalized slug
+export async function checkDuplicateDraft(titleOrSlug, userId) {
+  const slug = normalizeSlug(titleOrSlug);
+  try {
+    const res = await fetch(
+      `${API_URL}/listings/status/draft?userId=${userId}&slug=${slug}&t=${Date.now()}`
+    );
+    if (!res.ok) throw new Error("Fetch failed: " + res.status);
+    const listings = await res.json();
+    return listings.some((listing) => listing.slug === slug);
+  } catch (err) {
+    console.error("API Error:", err.message);
+    throw err;
+  }
 }

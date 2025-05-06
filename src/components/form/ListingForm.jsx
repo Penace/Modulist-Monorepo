@@ -288,7 +288,7 @@ export default function ListingForm({
               handleSaveDraft({
                 formData: { ...formData, images },
                 toast: showToast,
-                user: formData.createdBy || { _id: "temp-user-id" },
+                user: formData.createdBy || { _id: "681326fa4ef3dddc064008eb" },
                 isEditMode: isEditing,
                 listingId: formData._id,
                 setSubmitting: () => {},
