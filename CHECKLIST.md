@@ -1,4 +1,4 @@
-# RealEstateSaaS Frontend – Deployment Checklist
+# Modulist Frontend – Deployment Checklist
 
 ---
 

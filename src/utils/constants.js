@@ -2,7 +2,7 @@
 export const API_URL = import.meta.env.VITE_API_URL;
 
 // Site Information
-export const SITE_NAME = "RealEstateSaaS";
+export const SITE_NAME = "Modulist";
 
 // Other Settings
 export const FEATURED_LISTINGS_LIMIT = 3;

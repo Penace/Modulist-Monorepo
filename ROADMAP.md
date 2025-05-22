@@ -1,4 +1,4 @@
-# RealEstateSaaS Frontend – Roadmap
+# Modulist Frontend – Roadmap
 
 ---
 

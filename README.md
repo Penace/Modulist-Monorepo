@@ -1,8 +1,8 @@
-# RealEstateSaaS – Frontend (Vite + Tailwind)
+# Modulist – Frontend (Vite + Tailwind)
 
 ## Overview
 
-This is the frontend for the RealEstateSaaS platform – a full-featured real estate listing system with dashboards, admin controls, and modular UI.
+This is the frontend for the Modulist platform – a full-featured real estate listing system with dashboards, admin controls, and modular UI.
 
 Built for performance, scalability, and developer experience using:
 - Vite for blazing-fast dev & build
@@ -36,7 +36,7 @@ sudo npm install -g pnpm
 3. Clone the repository:
 
 ```bash
-git clone git@github.com:Penace/realestatesaas-frontend.git
+git clone git@github.com:Penace/modulist-frontend.git
 ```
 
 > ⚡ Note:
@@ -46,7 +46,7 @@ git clone git@github.com:Penace/realestatesaas-frontend.git
 4. Install project dependencies:
 
 ```bash
-cd realestatesaas-frontend
+cd modulist-frontend
 pnpm install
 ```
 
@@ -112,7 +112,7 @@ See [ROADMAP.md](./ROADMAP.md)
 ---
 ## Additional Resources
 
-- [RealEstateSaaS Backend Repo](https://github.com/Penace/realestatesaas-backend)
+- [Modulist Backend Repo](https://github.com/Penace/modulist-backend)
 
 ---
 ## License
