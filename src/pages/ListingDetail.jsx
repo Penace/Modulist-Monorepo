@@ -268,6 +268,14 @@ export default function ListingDetail() {
         className={`relative h-[77vh] overflow-hidden group`}
       >
         <div className="relative w-full h-full overflow-hidden group pointer-events-auto">
+          {/* Pending Approval Badge */}
+          {listing.status === "pending" && (
+            <div className="absolute top-4 left-4 z-50">
+              <span className="bg-yellow-100 text-yellow-800 text-sm font-semibold px-4 py-2 rounded-full shadow backdrop-blur-sm">
+                ⏳ Awaiting Approval
+              </span>
+            </div>
+          )}
           <div
             className="w-full h-full"
             style={{ width: "100%", height: "100%" }}
@@ -483,23 +491,35 @@ export default function ListingDetail() {
             </div>
           </div>
         </div>
-
         {/* Favorite and contact buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
-          <Button
-            onClick={handleFavoriteClick}
-            size="lg"
-            variant={isFavorited ? "primaryLight" : "cta"}
-          >
-            {isFavorited ? "Remove from Favorites" : "Add to Favorites"}
-          </Button>
-          <Button
-            onClick={() => alert("Contacting the agent...")}
-            size="lg"
-            variant="primaryLight"
-          >
-            Contact Agent
-          </Button>
+          {listing.status === "pending" ? (
+            <div className="text-center p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+              <p className="text-yellow-700 mb-2">
+                This listing is awaiting approval and is not yet active.
+              </p>
+              <p className="text-sm text-yellow-600">
+                Features like favorites and contacting the agent will be available once approved.
+              </p>
+            </div>
+          ) : (
+            <>
+              <Button
+                onClick={handleFavoriteClick}
+                size="lg"
+                variant={isFavorited ? "primaryLight" : "cta"}
+              >
+                {isFavorited ? "Remove from Favorites" : "Add to Favorites"}
+              </Button>
+              <Button
+                onClick={() => alert("Contacting the agent...")}
+                size="lg"
+                variant="primaryLight"
+              >
+                Contact Agent
+              </Button>
+            </>
+          )}
         </div>
       </div>
       {isModalOpen && (

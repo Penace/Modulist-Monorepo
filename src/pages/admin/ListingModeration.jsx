@@ -86,7 +86,7 @@ export default function AdminModeration() {
                 : "/assets/fallback.jpg"
             }
             fallbackImage="/assets/fallback.jpg"
-            to={`/pending/${listing._id}`}
+            to={`/listings/${listing._id}`}
             actions={[
               <Button
                 key="approve"

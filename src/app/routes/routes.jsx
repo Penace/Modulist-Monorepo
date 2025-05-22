@@ -23,9 +23,6 @@ const AdminSettings = withPageLoader(() =>
 );
 const Analytics = withPageLoader(() => import("../../pages/admin/Analytics"));
 const UserProfile = withPageLoader(() => import("../../pages/UserProfile"));
-const PendingListingDetail = withPageLoader(() =>
-  import("../../pages/PendingListingDetail")
-);
 const NotFound = withPageLoader(() => import("../../pages/NotFound"));
 const AdminLayout = withPageLoader(() => import("../../layouts/AdminLayout"));
 const SignUp = withPageLoader(() => import("../../pages/SignUp"));
@@ -138,14 +135,6 @@ export default function AppRoutes() {
             element={
               <Layout>
                 <UserProfile />
-              </Layout>
-            }
-          />
-          <Route
-            path="/pending/:id"
-            element={
-              <Layout>
-                <PendingListingDetail />
               </Layout>
             }
           />
