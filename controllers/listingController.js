@@ -225,29 +225,22 @@ export const rejectListing = async (req, res) => {
 
 // GET check for duplicate draft by slug, title, or address and createdBy
 export const checkDuplicateDraft = async (req, res) => {
-  try {
-    const { slug, title, address, createdBy } = req.query;
+  const { title, slug, address, createdBy, listingId } = req.body;
 
-    if (!createdBy || (!slug && !title && !address)) {
-      return res
-        .status(400)
-        .json({ message: "Missing required query parameters" });
-    }
+  const query = {
+    status: "draft",
+    createdBy,
+    $or: [
+      { title: title.trim() },
+      { slug: slug.trim() },
+      { address: address.trim() },
+    ],
+  };
 
-    const conditions = [{ status: "draft" }, { createdBy }];
-
-    const orConditions = [];
-    if (slug) orConditions.push({ slug });
-    if (title) orConditions.push({ title });
-    if (address) orConditions.push({ address });
-
-    const existing = await Listing.findOne({
-      $and: conditions,
-      $or: orConditions,
-    });
-
-    return res.status(200).json({ exists: !!existing });
-  } catch (error) {
-    res.status(500).json({ message: "Error checking duplicate draft", error });
+  if (listingId) {
+    query._id = { $ne: listingId }; // Exclude current draft
   }
+
+  const exists = await Listing.exists(query);
+  res.json({ exists: Boolean(exists) });
 };

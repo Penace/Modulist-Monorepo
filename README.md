@@ -1,8 +1,8 @@
-# RealEstateSaaS – Backend
+# Modulist – Backend
 
 ## Overview
 
-This is the official backend for the RealEstateSaaS platform.  
+This is the official backend for the Modulist platform.  
 It now uses a modular Express + MongoDB architecture with full support for:
 
 - Listings and pending approvals
@@ -64,8 +64,8 @@ sudo npm install -g pnpm
 
 2. Clone the repository:
 ```bash
-git clone https://github.com/Penace/realestatesaas-backend.git
-cd realestatesaas-backend
+git clone https://github.com/Penace/Modulist-Backend.git
+cd Modulist-Backend
 ```
 
 3. Setup environment:
@@ -108,4 +108,4 @@ See [ROADMAP.md](./ROADMAP.md)
 
 ---
 ## **Additional Resources**
-- [Frontend Repo](https://github.com/Penace/realestatesaas-frontend)
+- [Frontend Repo](https://github.com/Penace/Modulist-Frontend)

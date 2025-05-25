@@ -34,6 +34,6 @@ router.post("/:id/approve", approveListing);
 router.post("/:id/reject", rejectListing);
 
 // Route to check for duplicate draft listing by slug and userId
-router.get("/check-duplicate-draft", checkDuplicateDraft);
+router.post("/check-duplicate-draft", checkDuplicateDraft);
 
 export default router;

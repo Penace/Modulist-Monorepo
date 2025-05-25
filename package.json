@@ -1,5 +1,12 @@
 {
+  "name": "modulist-backend",
+  "version": "1.0.0",
   "type": "module",
+  "scripts": {
+    "clean": "pnpm store prune",
+    "update": "pnpm update",
+    "audit": "pnpm audit"
+  },
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
