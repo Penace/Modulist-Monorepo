@@ -1,0 +1,13 @@
+@keyframes dividerGlow {
+  0%, 100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+/* Link it to Tailwind manually */
+.animate-dividerGlow {
+  animation: dividerGlow 8s ease-in-out infinite;
+}

@@ -1,0 +1,74 @@
+# Vite/Tailwind/React Frontend
+
+# Node modules
+node_modules/
+
+# Build output
+dist/
+
+# Environment variables
+.env
+.env.local
+.env.production
+.env.development
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Log files
+*.log
+
+# IDE folders
+.vscode/
+.idea/
+.obsidian/
+
+# Deprecated/Archive
+archive
+
+# Large files and archives
+*.zip
+*.tar
+*.tar.gz
+*.rar
+*.7z
+*.iso
+*.dmg
+*.mp4
+*.mov
+*.avi
+*.wmv
+*.flv
+*.psd
+*.ai
+*.sketch
+*.fig
+*.xd
+
+# Large media files
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.ico
+*.svg
+!src/assets/*.jpg
+!src/assets/*.jpeg
+!src/assets/*.png
+!src/assets/*.gif
+!src/assets/*.ico
+!src/assets/*.svg
+!public/assets/*.jpg
+!public/assets/*.jpeg
+!public/assets/*.png
+!public/assets/*.gif
+!public/assets/*.ico
+!public/assets/*.svg
+
+# Exclude large binary files
+*.exe
+*.dll
+*.so
+*.dylib
+*.pkg
