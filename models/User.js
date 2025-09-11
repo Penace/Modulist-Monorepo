@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ["admin", "agent", "user"],
+    enum: ["admin", "publisher", "user"],
     default: "user",
     required: true,
   },
@@ -55,7 +55,7 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: "Listing" }],
+  favorites: [{ type: mongoose.Schema.Types.ObjectId, ref: "Item" }],
   createdAt: {
     type: Date,
     default: Date.now,

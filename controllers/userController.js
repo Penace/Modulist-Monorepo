@@ -1,4 +1,5 @@
 import User from "../models/User.js";
+import Item from "../models/Item.js";
 
 // GET all users
 export const getAllUsers = async (req, res) => {
@@ -88,7 +89,7 @@ export const getUserByEmail = async (req, res) => {
 
 // Add a favorite
 export const addFavorite = async (req, res) => {
-  const { userId, listingId } = req.body;
+  const { userId, itemId } = req.body;
 
   try {
     const user = await User.findById(userId);
@@ -99,8 +100,8 @@ export const addFavorite = async (req, res) => {
       user.favorites = []; // Initialize as an empty array if null
     }
 
-    if (!user.favorites.includes(listingId)) {
-      user.favorites.push(listingId); // Add the listing to favorites
+    if (!user.favorites.includes(itemId)) {
+      user.favorites.push(itemId); // Add the item to favorites
     }
 
     await user.save();
@@ -112,7 +113,7 @@ export const addFavorite = async (req, res) => {
 
 // Remove a favorite
 export const removeFavorite = async (req, res) => {
-  const { userId, listingId } = req.body;
+  const { userId, itemId } = req.body;
 
   try {
     const user = await User.findById(userId);
@@ -123,9 +124,9 @@ export const removeFavorite = async (req, res) => {
       return res.status(400).json({ message: "No favorites to remove" });
     }
 
-    // Ensure that favorites is an array and listingId is valid
+    // Ensure that favorites is an array and itemId is valid
     user.favorites = user.favorites.filter(
-      (id) => id && id.toString() !== listingId.toString() // Avoid calling .toString() on null or undefined
+      (id) => id && id.toString() !== itemId.toString() // Avoid calling .toString() on null or undefined
     );
 
     await user.save();
@@ -138,7 +139,7 @@ export const removeFavorite = async (req, res) => {
   }
 };
 
-// GET user's favorite listings
+// GET user's favorite items
 export const getFavorites = async (req, res) => {
   const { userId } = req.params;
 
@@ -148,7 +149,7 @@ export const getFavorites = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Return the favorites as a clean list of listings
+    // Return the favorites as a clean list of items
     const favorites = user.favorites.map((fav) => ({
       _id: fav._id,
       title: fav.title,

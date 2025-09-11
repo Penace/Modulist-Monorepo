@@ -1,22 +1,22 @@
 import User from "../models/user.js";
-import Listing from "../models/listing.js";
+import Item from "../models/Item.js";
 
 export const getAdminStats = async (req, res) => {
   try {
-    const totalListings = await Listing.countDocuments();
-    const pendingListings = await Listing.countDocuments({ approved: false });
+    const totalItems = await Item.countDocuments();
+    const pendingItems = await Item.countDocuments({ approved: false });
     const totalUsers = await User.countDocuments();
-    const activeAgents = await User.countDocuments({
-      role: "agent",
+    const activePublishers = await User.countDocuments({
+      role: "publisher",
       approved: true,
     });
     const admins = await User.countDocuments({ role: "admin" });
 
     res.status(200).json({
-      totalListings,
-      pendingListings,
+      totalItems,
+      pendingItems,
       totalUsers,
-      activeAgents,
+      activePublishers,
       admins,
     });
   } catch (error) {

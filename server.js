@@ -3,7 +3,8 @@ import mongoose from "mongoose";
 import cors from "cors";
 import morgan from "morgan";
 import dotenv from "dotenv";
-import listingRoutes from "./routes/listingRoutes.js";
+import authenticateToken from "./middleware/authenticateToken.js";
+import itemRoutes from "./routes/itemRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import settingsRoutes from "./routes/settingsRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
@@ -18,9 +19,10 @@ const PORT = process.env.PORT || 4000;
 app.use(cors());
 app.use(morgan("dev"));
 app.use(express.json());
+app.use(authenticateToken); // Verify tokens and attach user info
 
 // Routes
-app.use("/api/listings", listingRoutes);
+app.use("/api/items", itemRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/settings", settingsRoutes);
 app.use("/api/admin", adminRoutes);
