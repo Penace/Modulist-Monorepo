@@ -5,7 +5,25 @@ import path from "path";
 import fs from "fs";
 
 const router = express.Router();
-const upload = multer({ dest: "uploads/raw/" });
+
+// Ensure monorepo-level uploads directories exist
+const monorepoUploadsRoot = path.join(process.cwd(), "uploads");
+const rawDir = path.join(monorepoUploadsRoot, "raw");
+const optimizedDir = path.join(monorepoUploadsRoot, "optimized");
+[monorepoUploadsRoot, rawDir, optimizedDir].forEach((dir) => {
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+});
+
+const storage = multer.diskStorage({
+  destination: (_req, _file, cb) => cb(null, rawDir),
+  filename: (_req, file, cb) => {
+    const baseName = path.parse(file.originalname).name;
+    const unique = `${Date.now()}-${baseName}`;
+    cb(null, unique + path.extname(file.originalname));
+  },
+});
+
+const upload = multer({ storage });
 console.log("📥 Upload route mounted");
 
 router.post("/", upload.array("images"), async (req, res) => {
@@ -16,7 +34,7 @@ router.post("/", upload.array("images"), async (req, res) => {
       const inputPath = file.path;
       const baseName = path.parse(file.originalname).name;
       const filename = `${Date.now()}-${baseName}.webp`;
-      const outputPath = path.join("uploads/optimized", filename);
+      const outputPath = path.join(optimizedDir, filename);
 
       await sharp(inputPath)
         .resize({ width: 1920 })
@@ -25,7 +43,7 @@ router.post("/", upload.array("images"), async (req, res) => {
         .toFile(outputPath);
 
       fs.unlinkSync(inputPath); // Remove raw file
-      processedImages.push(`/uploads/optimized/${filename}`);
+      processedImages.push(`/uploads/${filename}`);
     }
 
     res.json({ urls: processedImages });

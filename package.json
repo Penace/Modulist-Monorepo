@@ -1,0 +1,41 @@
+{
+  "name": "modulist-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Modulist fullstack application for academic submission",
+  "scripts": {
+    "dev": "concurrently -k -n BACKEND,FRONTEND -c green,blue \"pnpm run backend:dev\" \"pnpm run frontend:dev\"",
+    "backend:dev": "pnpm --filter modulist-backend dev",
+    "frontend:dev": "pnpm --filter modulist-frontend dev",
+    "build": "concurrently -k \"pnpm run backend:build\" \"pnpm run frontend:build\"",
+    "backend:build": "pnpm --filter modulist-backend build",
+    "frontend:build": "pnpm --filter modulist-frontend build",
+    "test": "pnpm --filter modulist-backend test && pnpm --filter modulist-frontend test",
+    "lint": "pnpm --filter modulist-backend lint && pnpm --filter modulist-frontend lint",
+    "clean": "pnpm --filter modulist-backend clean && pnpm --filter modulist-frontend clean",
+    "seed:images": "node scripts/seed-images.js",
+    "setup": "pnpm install && pnpm seed:images"
+  },
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "packageManager": "pnpm@8.15.0",
+  "keywords": [
+    "fullstack",
+    "react",
+    "nodejs",
+    "express",
+    "mongodb",
+    "academic",
+    "monorepo"
+  ],
+  "author": "Penace",
+  "license": "MIT"
+}
