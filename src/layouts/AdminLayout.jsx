@@ -14,9 +14,9 @@ export default function AdminLayout() {
         {/* Sidebar */}
         <DashboardSidebar
           links={[
-            { to: "/admin", label: "Moderate Listings" },
+            { to: "/admin", label: "Moderate Items" },
             { to: "/admin/users", label: "Moderate Users" },
-            { to: "/admin/manage", label: "Manage Listings" },
+            { to: "/admin/manage", label: "Manage Items" },
             { to: "/admin/analytics", label: "Analytics" },
             { to: "/admin/settings", label: "Settings" },
           ]}

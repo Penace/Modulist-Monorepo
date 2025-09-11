@@ -1,13 +1,13 @@
-import { createListing, checkDuplicateDraft } from "../services/api";
+import { createItem, checkDuplicateDraft } from "../services/api";
 import { useState, useEffect } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import { getListingById, updateListing } from "../services/api";
+import { getItemById, updateItem } from "../services/api";
 import Button from "../components/common/Button";
 import { useToast } from "../context/ToastProvider";
 import { useAuth } from "../context/AuthProvider";
 import ReviewModal from "../components/ReviewModal";
 import { useModalHandlers } from "../utils/modalHandlers";
-import ListingForm from "../components/form/ListingForm";
+import ItemForm from "../components/form/ItemForm";
 import {
   handleChange,
   handleSubmit,
@@ -40,7 +40,7 @@ export default function Publish() {
     propertyType: "",
     yearBuilt: "",
     parkingAvailable: "",
-    listingType: "",
+    itemType: "",
     availableFrom: "",
     features: "",
     amenities: "",
@@ -67,14 +67,14 @@ export default function Publish() {
     setWarnings,
   });
 
-  // Determine if editing or creating a new listing, and set the correct localStorage key
+  // Determine if editing or creating a new item, and set the correct localStorage key
   const isEditing =
     (location.pathname.includes("/publish/draft/") ||
-      location.pathname.includes("/listings/")) &&
+      location.pathname.includes("/items/")) &&
     draftId;
   const storageKey = isEditing
     ? `editDraftForm_${draftId}`
-    : "newListingDraftForm";
+    : "newItemDraftForm";
 
   // Restore form data from localStorage if available
   useEffect(() => {
@@ -86,7 +86,7 @@ export default function Publish() {
 
     if (
       savedForm &&
-      ((isEditing && location.pathname.includes("/listings/")) ||
+      ((isEditing && location.pathname.includes("/items/")) ||
         (!isEditing && isNewPublishPage))
     ) {
       try {
@@ -131,7 +131,7 @@ export default function Publish() {
     // eslint-disable-next-line
   }, [draftId, location.pathname]);
 
-  // Show toast after restoring draft from previous session (only for new listing, and only if data exists)
+  // Show toast after restoring draft from previous session (only for new item, and only if data exists)
   useEffect(() => {
     if (
       !isRestoringDraft &&
@@ -165,8 +165,8 @@ export default function Publish() {
       Object.values(formData).filter((v) => !!v && v !== "").length < 2;
 
     if (!isFormMostlyEmpty) {
-      const dataToPersist =
-        storageKey === "newListingDraftForm"
+        const dataToPersist =
+          storageKey === "newItemDraftForm"
           ? Object.fromEntries(
               Object.entries(formData).filter(([key]) => key !== "images")
             )
@@ -185,7 +185,7 @@ export default function Publish() {
   useEffect(() => {
     if (!isRestoringDraft && (!user || !user._id)) {
       setTimeout(() => {
-        showToast("You must be logged in to publish a listing.", "error");
+        showToast("You must be logged in to publish an item.", "error");
       }, 200); // Add slight delay to avoid overlap
     }
   }, [user, isRestoringDraft]);
@@ -201,7 +201,7 @@ export default function Publish() {
       <div className="w-full max-w-2xl space-y-8">
         <div className="flex justify-between items-center">
           <h1 className="text-4xl font-bold text-gray-900">
-            Publish Your Listing
+            Publish Your Item
           </h1>
           {!isEditing && (
             <button
@@ -225,14 +225,14 @@ export default function Publish() {
                     propertyType: "",
                     yearBuilt: "",
                     parkingAvailable: "",
-                    listingType: "",
+                    itemType: "",
                     availableFrom: "",
                     features: "",
                     amenities: "",
                     facilities: "",
                     slug: "",
                   });
-                  localStorage.removeItem("newListingDraftForm");
+                  localStorage.removeItem("newItemDraftForm");
                   showToast("Form cleared.", "info");
                 }
               }}
@@ -244,13 +244,13 @@ export default function Publish() {
 
         {submitted && (
           <div className="p-4 rounded-xl bg-green-100 text-green-700 font-medium text-center shadow">
-            ✅ Your listing has been submitted!
+            ✅ Your item has been submitted!
           </div>
         )}
 
         <ReviewModal
           isOpen={showReviewModal}
-          listing={{
+          item={{
             ...(reviewData || {}),
             images: Array.isArray(reviewData?.images)
               ? reviewData.images.map((img) =>
@@ -291,7 +291,7 @@ export default function Publish() {
 
         <div className="text-sm text-gray-600 bg-blue-50 p-4 rounded-lg shadow border border-blue-200">
           <p>
-            <strong>Listing Instructions:</strong>
+            <strong>Item Instructions:</strong>
           </p>
           <ul className="list-disc list-inside mt-2 space-y-1">
             <li>
@@ -299,13 +299,13 @@ export default function Publish() {
             </li>
             <li>Drafts can be saved with basic info and completed later.</li>
             <li>
-              Listings with extreme values (e.g., very high price, many rooms)
+              Items with extreme values (e.g., very high price, many rooms)
               are allowed but will be flagged for admin review.
             </li>
             <li>Upload at least 3 high-quality JPG/JPEG images.</li>
           </ul>
         </div>
-        <ListingForm
+        <ItemForm
           formData={formData}
           setFormData={setFormData}
           errors={errors}
@@ -340,7 +340,7 @@ export default function Publish() {
               setSubmitting,
               navigate,
               isEditMode,
-              listingId,
+              itemId,
             } = data;
             if (!user || !user._id) {
               toast("You must be logged in to save a draft.", "error");
@@ -351,7 +351,7 @@ export default function Publish() {
             formData.price = Number(
               String(formData.price).replace(/[^\d.-]/g, "")
             );
-            formData.listingType = String(formData.listingType).toLowerCase();
+            formData.itemType = String(formData.itemType).toLowerCase();
 
             try {
               if (!isEditMode) {
@@ -384,17 +384,17 @@ export default function Publish() {
               };
 
               const res =
-                isEditMode && listingId
-                  ? await updateListing(listingId, draftData)
-                  : await createListing(draftData);
+                isEditMode && itemId
+                  ? await updateItem(itemId, draftData)
+                  : await createItem(draftData);
 
               if (!res || res.error || res.status >= 400) {
                 throw new Error("Server rejected the draft");
               }
 
               toast("Draft saved successfully!", "success");
-              localStorage.removeItem("newListingDraftForm");
-              navigate(`/agent-dashboard?tab=drafts`);
+              localStorage.removeItem("newItemDraftForm");
+              navigate(`/publisher-dashboard?tab=drafts`);
             } catch (err) {
               console.error("Failed to save draft:", err);
               toast("Failed to save draft. Try again.", "error");

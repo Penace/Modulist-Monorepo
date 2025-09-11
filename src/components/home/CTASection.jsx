@@ -4,7 +4,7 @@ import { useScrollParallax } from "../../hooks/useScrollParallax.js";
 
 export default function CTASection({
   title = "Start Your Journey",
-  buttonLink = "/listings",
+  buttonLink = "/items",
 }) {
   const ctaRef = useRef(null);
   const buttonRef = useRef(null);

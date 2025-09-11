@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import TextInput from "../components/form/TextInput";
 import { useToast } from "../context/ToastProvider";
-import ListingCard from "../components/ListingCard";
+import ItemCard from "../components/ItemCard";
 import { getFavorites } from "../services/api";
 
 export default function UserDashboard() {
@@ -11,7 +11,7 @@ export default function UserDashboard() {
   const { showToast } = useToast();
   const [editMode, setEditMode] = useState(false);
   const [formData, setFormData] = useState({ name: "", email: "" });
-  const [favoriteListings, setFavoriteListings] = useState([]);
+  const [favoriteItems, setFavoriteItems] = useState([]);
   const [activeTab, setActiveTab] = useState("profile");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const mobileMenuRef = useRef(null); // Reference to handle clicks outside sidebar
@@ -32,7 +32,7 @@ export default function UserDashboard() {
       if (!user?._id) return;
       try {
         const favorites = await getFavorites(user._id);
-        setFavoriteListings(favorites || []);
+        setFavoriteItems(favorites || []);
       } catch (err) {
         console.error("Failed to load favorites", err);
       }
@@ -258,17 +258,17 @@ export default function UserDashboard() {
         {activeTab === "favorites" && (
           <div className="space-y-6">
             <h1 className="text-3xl font-bold text-gray-900 mb-4">Favorites</h1>
-            {favoriteListings.length > 0 ? (
+            {favoriteItems.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {favoriteListings.map((listing) => (
-                  <ListingCard
-                    key={listing._id}
-                    _id={listing._id}
-                    title={listing.title}
-                    location={listing.location}
-                    price={listing.price}
-                    images={listing.images || []} // Ensure images are passed correctly
-                    prefix="listings"
+                {favoriteItems.map((item) => (
+                  <ItemCard
+                    key={item._id}
+                    _id={item._id}
+                    title={item.title}
+                    location={item.location}
+                    price={item.price}
+                    images={item.images || []} // Ensure images are passed correctly
+                    prefix="items"
                   />
                 ))}
               </div>

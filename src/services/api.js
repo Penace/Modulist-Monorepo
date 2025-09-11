@@ -24,27 +24,27 @@ async function fetchWithHandling(url, options = {}, fallback = null) {
   }
 }
 
-// --- Listings
-export async function fetchListings() {
-  return fetchWithHandling(`${API_URL}/listings`, {}, []);
+// --- Items
+export async function fetchItems() {
+  return fetchWithHandling(`${API_URL}/items`, {}, []);
 }
 
-export async function fetchListingById(id) {
-  return fetchWithHandling(`${API_URL}/listings/${id}`, {}, null);
+export async function fetchItemById(id) {
+  return fetchWithHandling(`${API_URL}/items/${id}`, {}, null);
 }
 
-// Named export for getListingById using fetchListingById
-export { fetchListingById as getListingById };
+// Named export for getItemById using fetchItemById
+export { fetchItemById as getItemById };
 
-export async function fetchListingsByTag(tag) {
-  return fetchWithHandling(`${API_URL}/listings?tag=${tag}`, {}, []);
+export async function fetchItemsByTag(tag) {
+  return fetchWithHandling(`${API_URL}/items?tag=${tag}`, {}, []);
 }
 
-// Fetch listings by status, optionally filtered by userId
-export async function fetchListingsByStatus(status, userId) {
+// Fetch items by status, optionally filtered by userId
+export async function fetchItemsByStatus(status, userId) {
   try {
     const res = await fetch(
-      `${API_URL}/listings/status/${status}?userId=${userId}&t=${Date.now()}`
+      `${API_URL}/items/status/${status}?userId=${userId}&t=${Date.now()}`
     );
     if (!res.ok) throw new Error("Fetch failed: " + res.status);
     return await res.json();
@@ -55,12 +55,12 @@ export async function fetchListingsByStatus(status, userId) {
 }
 
 // --- Publish
-export async function createListing(listingData) {
+export async function createItem(itemData) {
   try {
-    const res = await fetch(`${API_URL}/listings`, {
+    const res = await fetch(`${API_URL}/items`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(listingData),
+      body: JSON.stringify(itemData),
     });
 
     if (!res.ok) {
@@ -76,14 +76,14 @@ export async function createListing(listingData) {
   }
 }
 
-export async function deleteListing(id) {
-  return fetchWithHandling(`${API_URL}/listings/${id}`, {
+export async function deleteItem(id) {
+  return fetchWithHandling(`${API_URL}/items/${id}`, {
     method: "DELETE",
   });
 }
 
-export async function updateListing(id, updateData) {
-  return fetchWithHandling(`${API_URL}/listings/${id}`, {
+export async function updateItem(id, updateData) {
+  return fetchWithHandling(`${API_URL}/items/${id}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(updateData),
@@ -96,7 +96,7 @@ export async function getFavorites(userId) {
 }
 
 // Add a favorite
-export async function addFavorite(userId, listingId) {
+export async function addFavorite(userId, itemId) {
   try {
     const res = await fetch(`${API_URL}/users/addFavorite`, {
       method: "POST", // POST for adding a favorite
@@ -105,7 +105,7 @@ export async function addFavorite(userId, listingId) {
       },
       body: JSON.stringify({
         userId,
-        listingId,
+        itemId,
       }),
     });
 
@@ -120,7 +120,7 @@ export async function addFavorite(userId, listingId) {
 }
 
 // Remove a favorite
-export async function removeFavorite(userId, listingId) {
+export async function removeFavorite(userId, itemId) {
   try {
     const res = await fetch(`${API_URL}/users/removeFavorite`, {
       method: "DELETE", // DELETE for removing a favorite
@@ -129,7 +129,7 @@ export async function removeFavorite(userId, listingId) {
       },
       body: JSON.stringify({
         userId,
-        listingId,
+        itemId,
       }),
     });
 
@@ -158,8 +158,8 @@ export async function getUserById(id) {
 }
 
 // --- Utilities
-export function isAgentOrAdmin(user) {
-  return user?.role === "agent" || user?.role === "admin";
+export function isPublisherOrAdmin(user) {
+  return user?.role === "publisher" || user?.role === "admin";
 }
 
 // --- User Moderation
@@ -179,23 +179,23 @@ export async function rejectUser(id) {
   });
 }
 
-// --- Moderation: Listings
-export async function approveListing(id) {
-  return fetchWithHandling(`${API_URL}/listings/${id}/approve`, {
+// --- Moderation: Items
+export async function approveItem(id) {
+  return fetchWithHandling(`${API_URL}/items/${id}/approve`, {
     method: "POST",
   });
 }
 
-export async function rejectListing(id) {
-  return fetchWithHandling(`${API_URL}/listings/${id}/reject`, {
+export async function rejectItem(id) {
+  return fetchWithHandling(`${API_URL}/items/${id}/reject`, {
     method: "POST",
   });
 }
 
-// --- Fetch Draft and Pending Listings
-export async function fetchDraftAndPendingListings() {
-  const allListings = await fetchWithHandling(`${API_URL}/listings`, {}, []);
-  return allListings.filter((listing) => listing.status === "pending");
+// --- Fetch Draft and Pending Items
+export async function fetchDraftAndPendingItems() {
+  const allItems = await fetchWithHandling(`${API_URL}/items`, {}, []);
+  return allItems.filter((item) => item.status === "pending");
 }
 
 // --- Settings
@@ -214,16 +214,16 @@ export async function getSettings() {
   return fetchWithHandling(`${API_URL}/settings`, {}, {});
 }
 
-// Check for existing draft listing by normalized slug
+// Check for existing draft item by normalized slug
 export async function checkDuplicateDraft(titleOrSlug, userId) {
   const slug = normalizeSlug(titleOrSlug);
   try {
     const res = await fetch(
-      `${API_URL}/listings/status/draft?userId=${userId}&slug=${slug}&t=${Date.now()}`
+      `${API_URL}/items/status/draft?userId=${userId}&slug=${slug}&t=${Date.now()}`
     );
     if (!res.ok) throw new Error("Fetch failed: " + res.status);
-    const listings = await res.json();
-    return listings.some((listing) => listing.slug === slug);
+    const items = await res.json();
+    return items.some((item) => item.slug === slug);
   } catch (err) {
     console.error("API Error:", err.message);
     throw err;

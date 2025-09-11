@@ -7,7 +7,7 @@ export default function Layout({ children }) {
   const { user } = useAuth();
   // const location = useLocation(); // Use useLocation hook to get the current path
   const isHome = location.pathname === "/";
-  const isListingDetail = location.pathname.startsWith("/listings/");
+  const isItemDetail = location.pathname.startsWith("/items/");
 
   return (
     <>
@@ -16,8 +16,8 @@ export default function Layout({ children }) {
         className={`${
           isHome
             ? "home-main" // Special layout for the homepage
-            : isListingDetail
-            ? "listing-detail-layout" // Special layout for listing details
+            : isItemDetail
+            ? "item-detail-layout" // Special layout for item details
             : "default-layout" // Default layout for all other pages
         }`}
       >

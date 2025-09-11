@@ -4,8 +4,8 @@ import { useToast } from "../../context/ToastProvider";
 export default function Analytics() {
   const { showToast } = useToast();
   const [stats, setStats] = useState({
-    totalListings: 0,
-    pendingListings: 0,
+    totalItems: 0,
+    pendingItems: 0,
     totalUsers: 0,
     activeAgents: 0,
     admins: 0,
@@ -31,8 +31,8 @@ export default function Analytics() {
   }, []);
 
   const cards = [
-    { label: "Total Listings", value: stats.totalListings },
-    { label: "Pending Listings", value: stats.pendingListings },
+    { label: "Total Items", value: stats.totalItems },
+    { label: "Pending Items", value: stats.pendingItems },
     { label: "Total Users", value: stats.totalUsers },
     { label: "Active Agents", value: stats.activeAgents },
     { label: "Admins", value: stats.admins },

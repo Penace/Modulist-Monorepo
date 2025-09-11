@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { getListingById } from "../services/api";
+import { getItemById } from "../services/api";
 
 export function useLoadDraft(
   isEditing,
@@ -12,7 +12,7 @@ export function useLoadDraft(
     if (isEditing) {
       (async () => {
         try {
-          const draft = await getListingById(draftId);
+          const draft = await getItemById(draftId);
           if (!draft) return;
 
           const loadedFormData = {
@@ -28,7 +28,7 @@ export function useLoadDraft(
             propertyType: draft.propertyType || "",
             yearBuilt: draft.yearBuilt?.toString() || "",
             parkingAvailable: draft.parkingAvailable || "",
-            listingType: draft.listingType || "",
+            itemType: draft.itemType || "",
             availableFrom: draft.availableFrom
               ? new Date(draft.availableFrom).toISOString().split("T")[0]
               : "",

@@ -5,13 +5,13 @@ export const API_URL = import.meta.env.VITE_API_URL;
 export const SITE_NAME = "Modulist";
 
 // Other Settings
-export const FEATURED_LISTINGS_LIMIT = 3;
+export const FEATURED_ITEMS_LIMIT = 3;
 
 // You can add more as needed later:
 // export const DEFAULT_AVATAR = "/src/assets/default-avatar.png";
 // export const MOBILE_BREAKPOINT = 768;
 
-// Listing Options
+// Item Options
 export const propertyTypes = [
   "Apartment",
   "House",
@@ -24,7 +24,7 @@ export const propertyTypes = [
   "Other",
 ];
 
-export const listingTypes = ["Sale", "Rent", "Auction"];
+export const itemTypes = ["Sale", "Rent", "Auction"];
 
 export const features = [
   "Garage",

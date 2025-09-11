@@ -6,14 +6,14 @@ import withPageLoader from "../withPageLoader";
 
 // Lazy-wrapped pages
 const Home = withPageLoader(() => import("../../pages/Home"));
-const Listings = withPageLoader(() => import("../../pages/Listings"));
-const ListingDetail = withPageLoader(() => import("../../pages/ListingDetail"));
+const Items = withPageLoader(() => import("../../pages/Items"));
+const ItemDetail = withPageLoader(() => import("../../pages/ItemDetail"));
 const Publish = withPageLoader(() => import("../../pages/Publish"));
-const ListingModeration = withPageLoader(() =>
-  import("../../pages/admin/ListingModeration")
+const ItemModeration = withPageLoader(() =>
+  import("../../pages/admin/ItemModeration")
 );
-const ManageListings = withPageLoader(() =>
-  import("../../pages/admin/ManageListings")
+const ManageItems = withPageLoader(() =>
+  import("../../pages/admin/ManageItems")
 );
 const UserModeration = withPageLoader(() =>
   import("../../pages/admin/UserModeration")
@@ -28,8 +28,8 @@ const AdminLayout = withPageLoader(() => import("../../layouts/AdminLayout"));
 const SignUp = withPageLoader(() => import("../../pages/SignUp"));
 const Login = withPageLoader(() => import("../../pages/Login"));
 const UserDashboard = withPageLoader(() => import("../../pages/UserDashboard"));
-const AgentDashboard = withPageLoader(() =>
-  import("../../pages/AgentDashboard")
+const PublisherDashboard = withPageLoader(() =>
+  import("../../pages/PublisherDashboard")
 );
 const Calculator = withPageLoader(() => import("../../pages/Calculator"));
 const MaintenancePage = withPageLoader(() =>
@@ -75,10 +75,10 @@ export default function AppRoutes() {
             }
           />
           <Route
-            path="/agent-dashboard"
+            path="/publisher-dashboard"
             element={
               <Layout>
-                <AgentDashboard />
+                <PublisherDashboard />
               </Layout>
             }
           />
@@ -91,23 +91,23 @@ export default function AppRoutes() {
             }
           />
           <Route
-            path="/listings"
+            path="/items"
             element={
               <Layout>
-                <Listings />
+                <Items />
               </Layout>
             }
           />
           <Route
-            path="/listings/:id"
+            path="/items/:id"
             element={
               <Layout>
-                <ListingDetail />
+                <ItemDetail />
               </Layout>
             }
           />
           <Route
-            path="/listings/:id/edit"
+            path="/items/:id/edit"
             element={
               <Layout>
                 <Publish />
@@ -123,10 +123,10 @@ export default function AppRoutes() {
             }
           />
           <Route
-            path="agent-dashboard"
+            path="publisher-dashboard"
             element={
               <Layout>
-                <AgentDashboard />
+                <PublisherDashboard />
               </Layout>
             }
           />
@@ -141,8 +141,8 @@ export default function AppRoutes() {
 
           {/* Admin layout routes (separate from main layout) */}
           <Route path="/admin" element={<AdminLayout />}>
-            <Route index element={<ListingModeration />} />
-            <Route path="manage" element={<ManageListings />} />
+            <Route index element={<ItemModeration />} />
+            <Route path="manage" element={<ManageItems />} />
             <Route path="users" element={<UserModeration />} />
             <Route path="settings" element={<AdminSettings />} />
             <Route path="analytics" element={<Analytics />} />

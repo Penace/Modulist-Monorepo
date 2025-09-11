@@ -88,7 +88,7 @@ export function validateField(field, value) {
       if (!value || isNaN(numVal) || numVal < 0) {
         error = "Please enter a valid year.";
       } else if (numVal < 1600) {
-        warning = "Is this a heritage listing? Very old year.";
+        warning = "Is this a heritage item? Very old year.";
       } else if (numVal < 1700) {
         warning = "Very old year. Admin will review.";
         extreme = true;
@@ -100,11 +100,11 @@ export function validateField(field, value) {
       break;
     }
 
-    case "listingType":
+    case "itemType":
       error =
         value && typeof value === "string" && value.trim().length > 0
           ? ""
-          : "Please select a listing type.";
+          : "Please select a item type.";
       break;
 
     case "availableFrom":

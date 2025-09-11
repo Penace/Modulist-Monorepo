@@ -50,22 +50,22 @@ export default function Navbar() {
           <Link to="/" className="text-gray-600 hover:text-blue-600">
             Home
           </Link>
-          <Link to="/listings" className="text-gray-600 hover:text-blue-600">
-            Listings
+          <Link to="/items" className="text-gray-600 hover:text-blue-600">
+            Items
           </Link>
           <Link to="/calculator" className="text-gray-600 hover:text-blue-600">
             Calculator
           </Link>
-          {(user?.role === "agent" || user?.role === "admin") && (
+          {(user?.role === "publisher" || user?.role === "admin") && (
             <>
               <Link to="/publish" className="text-gray-600 hover:text-blue-600">
                 Publish
               </Link>
               <Link
-                to="/agent-dashboard"
+                to="/publisher-dashboard"
                 className="text-gray-600 hover:text-blue-600"
               >
-                Agent Dashboard
+                Publisher Dashboard
               </Link>
             </>
           )}
@@ -180,11 +180,11 @@ export default function Navbar() {
               Home
             </Link>
             <Link
-              to="/listings"
+              to="/items"
               className="text-gray-600 hover:text-blue-600"
               onClick={closeMobileMenu}
             >
-              Listings
+              Items
             </Link>
             <Link
               to="/calculator"
@@ -203,11 +203,11 @@ export default function Navbar() {
                   Publish
                 </Link>
                 <Link
-                  to="/agent-dashboard"
+                  to="/publisher-dashboard"
                   className="text-gray-600 hover:text-blue-600"
                   onClick={closeMobileMenu}
                 >
-                  Agent Dashboard
+                  Publisher Dashboard
                 </Link>
               </>
             )}

@@ -66,7 +66,7 @@ export const handleSubmit = async ({
   formData,
   user,
   isEditMode,
-  listingId,
+  itemId,
   setSubmitting,
   navigate,
   toast,
@@ -83,8 +83,8 @@ export const handleSubmit = async ({
     };
 
     const endpoint = isEditMode
-      ? `/api/listings/${listingId}`
-      : "/api/listings";
+      ? `/api/items/${itemId}`
+      : "/api/items";
     const method = isEditMode ? "PATCH" : "POST";
 
     const res = await fetch(endpoint, {
@@ -96,11 +96,11 @@ export const handleSubmit = async ({
     if (!res.ok) throw new Error("Submit failed");
 
     const data = await res.json();
-    toast.success("Listing submitted successfully!");
-    navigate(`/listings/${data._id}`);
+    toast.success("Item submitted successfully!");
+    navigate(`/items/${data._id}`);
   } catch (err) {
     console.error("Submit failed:", err);
-    toast.error("Failed to submit listing.");
+    toast.error("Failed to submit item.");
   } finally {
     setSubmitting(false);
   }
@@ -166,7 +166,7 @@ export const handleSaveDraft = async ({
   formData,
   user,
   isEditMode,
-  listingId,
+  itemId,
   setSubmitting,
   toast,
   navigate,
@@ -175,7 +175,7 @@ export const handleSaveDraft = async ({
     setSubmitting(true);
 
     const duplicateCheckRes = await fetch(
-      `/api/listings/check-duplicate-draft?title=${encodeURIComponent(
+      `/api/items/check-duplicate-draft?title=${encodeURIComponent(
         formData.title
       )}&userId=${user._id}`
     );
@@ -206,7 +206,7 @@ export const handleSaveDraft = async ({
       propertyType: "Unknown",
       yearBuilt: 2000,
       parkingAvailable: "Unknown",
-      listingType: "sale",
+      itemType: "sale",
       availableFrom: new Date().toISOString(),
       features: [],
       amenities: [],
@@ -224,16 +224,16 @@ export const handleSaveDraft = async ({
       }
     }
 
-    const listingTypeRaw = (formData.listingType || "")
+    const itemTypeRaw = (formData.itemType || "")
       .toString()
       .trim()
       .toLowerCase();
-    const validListingTypes = ["sale", "rent", "auction"];
+    const validItemTypes = ["sale", "rent", "auction"];
 
-    if (validListingTypes.includes(listingTypeRaw)) {
-      cleanedFormData.listingType = listingTypeRaw;
+    if (validItemTypes.includes(itemTypeRaw)) {
+      cleanedFormData.itemType = itemTypeRaw;
     } else {
-      delete cleanedFormData.listingType;
+      delete cleanedFormData.itemType;
     }
 
     const images = formData.images?.length
@@ -248,8 +248,8 @@ export const handleSaveDraft = async ({
     };
 
     const endpoint = isEditMode
-      ? `/api/listings/${listingId}`
-      : "/api/listings";
+      ? `/api/items/${itemId}`
+      : "/api/items";
     const method = isEditMode ? "PATCH" : "POST";
 
     const res = await fetch(endpoint, {

@@ -2,7 +2,7 @@ import { useRef, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useScrollParallax } from "../hooks/useScrollParallax.js";
 import SectionDivider from "./common/SectionDivider";
-import { fetchListingsByTag } from "../services/api";
+import { fetchItemsByTag } from "../services/api";
 
 export default function PropertyShowcase({ id, images, title, description }) {
   const showcaseRef = useRef(null);
@@ -23,7 +23,7 @@ export default function PropertyShowcase({ id, images, title, description }) {
       : "/assets/fallback.jpg";
 
   return (
-    <Link to={`/listings/${id}`} className="block">
+    <Link to={`/items/${id}`} className="block">
       <div className="relative z-10 overflow-hidden mt-[1.4vh]">
         <section
           ref={showcaseRef}

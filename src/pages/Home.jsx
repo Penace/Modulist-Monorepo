@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import PropertyShowcase from "../components/PropertyShowcase";
 import FeatureCard from "../components/home/FeatureCard";
-import { fetchListings } from "../services/api";
+import { fetchItems } from "../services/api";
 import { useScrollAnimation } from "../hooks/useScrollAnimation";
 import { useHeroParallax } from "../hooks/useHeroParallax";
 import CTASection from "../components/home/CTASection";
@@ -10,9 +10,9 @@ import SectionDivider from "../components/common/SectionDivider.jsx";
 import Button from "../components/common/Button.jsx";
 
 export default function Home() {
-  const [featuredListings, setFeaturedListings] = useState([]);
-  const [auctionListing, setAuctionListing] = useState([]);
-  const [sponsoredListings, setSponsoredListings] = useState([]);
+  const [featuredItems, setFeaturedItems] = useState([]);
+  const [auctionItem, setAuctionItem] = useState([]);
+  const [sponsoredItems, setSponsoredItems] = useState([]);
 
   useScrollAnimation({
     infoContentId: "infoContent",
@@ -22,24 +22,24 @@ export default function Home() {
   useHeroParallax();
 
   useEffect(() => {
-    const loadListings = async () => {
-      const listings = await fetchListings();
-      const featured = listings.filter((l) => l.tag === "featured").slice(0, 2);
-      const auction = listings.filter((l) => l.tag === "auction").slice(0, 1);
-      const sponsored = listings
+    const loadItems = async () => {
+      const items = await fetchItems();
+      const featured = items.filter((l) => l.tag === "featured").slice(0, 2);
+      const auction = items.filter((l) => l.tag === "auction").slice(0, 1);
+      const sponsored = items
         .filter((l) => l.tag === "sponsored")
         .slice(0, 2);
 
-      setFeaturedListings(featured);
-      setAuctionListing(auction);
-      setSponsoredListings(sponsored);
+      setFeaturedItems(featured);
+      setAuctionItem(auction);
+      setSponsoredItems(sponsored);
 
-      console.log("featuredListings:", featured);
-      console.log("auctionListing:", auction);
-      console.log("sponsoredListings:", sponsored);
+      console.log("featuredItems:", featured);
+      console.log("auctionItem:", auction);
+      console.log("sponsoredItems:", sponsored);
     };
 
-    loadListings();
+    loadItems();
   }, []);
 
   return (
@@ -63,10 +63,10 @@ export default function Home() {
         </h1>
         <Link
           id="heroButton"
-          to="/listings"
+          to="/items"
           className="mt-6 text-white bg-blue-600 hover:bg-blue-500 px-6 py-3 rounded-lg text-lg font-semibold opacity-0 translate-y-10 transition-all duration-700 ease-out"
         >
-          Browse Listings
+          Browse Items
         </Link>
       </section>
 
@@ -89,7 +89,7 @@ export default function Home() {
           {/* Feature Cards */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 max-w-6xl">
             <FeatureCard
-              title="Property Listings"
+              title="Property Items"
               description="Find your dream home among thousands of properties."
             />
             <FeatureCard
@@ -101,7 +101,7 @@ export default function Home() {
               description="Plan your finances with our built-in tools."
             />
             <FeatureCard
-              title="Publish Listings"
+              title="Publish Items"
               description="List your property easily and connect with buyers."
             />
           </div>
@@ -112,8 +112,8 @@ export default function Home() {
         <Button to="/calculator" size="lg" variant="cta">
           Try Our Calculator
         </Button>
-        <Button to="/listings" size="lg" variant="cta">
-          Browse Listings
+        <Button to="/items" size="lg" variant="cta">
+          Browse Items
         </Button>
       </div>
 
@@ -121,7 +121,7 @@ export default function Home() {
       <div className="w-full h-16 bg-gradient-to-b from-white via-gray-100/40 to-white" />
 
       {/* Auction Spotlight */}
-      {auctionListing.length > 0 && (
+      {auctionItem.length > 0 && (
         <>
           <div className="text-center py-6">
             <h2 className="text-3xl font-semibold text-gray-800 mb-2">
@@ -133,39 +133,39 @@ export default function Home() {
           </div>
 
           <PropertyShowcase
-            key={auctionListing[0]._id}
-            id={auctionListing[0]._id}
-            images={auctionListing[0].images}
-            title={auctionListing[0].title}
-            description={auctionListing[0].description}
+            key={auctionItem[0]._id}
+            id={auctionItem[0]._id}
+            images={auctionItem[0].images}
+            title={auctionItem[0].title}
+            description={auctionItem[0].description}
           />
         </>
       )}
 
       {/* Featured Properties */}
-      {featuredListings.length > 0 && (
+      {featuredItems.length > 0 && (
         <>
           <SectionDivider label="Featured Collection" />
           <div className="text-center py-12">
             <h2 className="text-3xl font-semibold text-gray-800 mb-2">
               Featured Collection
             </h2>
-            <p className="text-gray-500">Hand-picked premium listings.</p>
+            <p className="text-gray-500">Hand-picked premium items.</p>
           </div>
-          {featuredListings.map((listing) => (
+          {featuredItems.map((item) => (
             <PropertyShowcase
-              key={listing._id}
-              id={listing._id}
-              images={listing.images}
-              title={listing.title}
-              description={listing.description}
+              key={item._id}
+              id={item._id}
+              images={item.images}
+              title={item.title}
+              description={item.description}
             />
           ))}
         </>
       )}
 
       {/* Sponsored Highlights */}
-      {sponsoredListings.length > 0 && (
+      {sponsoredItems.length > 0 && (
         <>
           <SectionDivider label="Curated Exclusives" />
           <div className="text-center py-12">
@@ -175,13 +175,13 @@ export default function Home() {
             <p className="text-gray-500">Properties by invitation only.</p>
           </div>
 
-          {sponsoredListings.map((listing) => (
+          {sponsoredItems.map((item) => (
             <PropertyShowcase
-              key={listing._id}
-              id={listing._id}
-              images={listing.images}
-              title={listing.title}
-              description={listing.description}
+              key={item._id}
+              id={item._id}
+              images={item.images}
+              title={item.title}
+              description={item.description}
             />
           ))}
         </>
