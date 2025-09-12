@@ -162,7 +162,7 @@ db.items.insertMany([
     bathrooms: 1,
     squareFootage: 80,
     address: "123 Main St",
-    images: ["http://localhost:4000/uploads/house-1.png"],
+    images: ["https://images.unsplash.com/photo-1505692794403-34d4982f88aa?w=1200&q=80&auto=format"],
     description: "Great apartment",
     propertyType: "apartment",
     yearBuilt: 2015,

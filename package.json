@@ -14,13 +14,16 @@
     "lint": "pnpm --filter modulist-backend lint && pnpm --filter modulist-frontend lint",
     "clean": "pnpm --filter modulist-backend clean && pnpm --filter modulist-frontend clean",
     "seed:images": "node scripts/seed-images.js",
+    "seed:mongo": "node packages/backend/scripts/seed-remote.js",
+    "test:e2e": "playwright test",
     "setup": "pnpm install && pnpm seed:images"
   },
   "workspaces": [
     "packages/*"
   ],
   "devDependencies": {
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "@playwright/test": "^1.47.2"
   },
   "engines": {
     "node": ">=18.0.0",
