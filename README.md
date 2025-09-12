@@ -137,6 +137,18 @@ modulist-monorepo/
 ## 🧪 Testing the Application
 
 ### Seed MongoDB (optional but recommended)
+You have two options:
+
+- Use bundled remote images (no setup):
+  pnpm seed:mongo
+
+- Use your local images uploaded to an open-source storage (MinIO or Supabase):
+  1) Set env for your provider in .env (see placeholders)
+  2) Upload and generate manifest:
+     PROVIDER=minio pnpm upload:images  # or PROVIDER=supabase
+  3) Seed using the manifest URLs:
+     pnpm seed:mongo:manifest
+
 Use the following to seed a couple of users and items for a fast demo:
 
 ```bash

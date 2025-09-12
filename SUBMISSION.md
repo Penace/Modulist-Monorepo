@@ -33,58 +33,25 @@ pnpm dev
 ## MongoDB Seeding (recommended for marking)
 Provide a minimal dataset for easy evaluation.
 
-1) Create DB and user (local default)
+Option A) One-command remote image seed (no setup)
 ```bash
-mongosh <<'EOF'
-use modulist
-// Create an admin/publisher user for testing (password is bcrypt-hashed by the app on creation routes; for seed we keep plain fields)
-db.users.insertOne({
-  email: "admin@example.com",
-  name: "Admin",
-  passwordHash: "$2a$10$Xk5FQjYiA1x1LxFZtBk8quyH.2z6d2J95o0A1xTt6M4A1rpx9k4y6", // 'password' (bcrypt)
-  role: "admin",
-  approved: true,
-  createdAt: new Date()
-})
+pnpm seed:mongo
+```
 
-// Seed a couple of sample items (image URLs can be external or the local /uploads seed)
-db.items.insertMany([
-  {
-    title: "Cozy Apartment",
-    price: 250000,
-    location: "City Center",
-    bedrooms: 2,
-    bathrooms: 1,
-    squareFootage: 80,
-    address: "123 Main St",
-    images: ["https://images.unsplash.com/photo-1505692794403-34d4982f88aa?w=1200&q=80&auto=format"],
-    description: "Great apartment",
-    propertyType: "apartment",
-    yearBuilt: 2015,
-    parkingAvailable: "Yes",
-    type: "sale",
-    status: "published",
-    createdAt: new Date()
-  },
-  {
-    title: "Suburban House",
-    price: 450000,
-    location: "Green Suburbs",
-    bedrooms: 4,
-    bathrooms: 3,
-    squareFootage: 180,
-    address: "456 Oak Ave",
-    images: ["https://images.unsplash.com/photo-1560185008-b033106af2dd?w=1200&q=80&auto=format"],
-    description: "Spacious family home",
-    propertyType: "house",
-    yearBuilt: 2008,
-    parkingAvailable: "Garage",
-    type: "sale",
-    status: "published",
-    createdAt: new Date()
-  }
-])
-EOF
+Option B) Use your local images but host them via an open-source storage
+- MinIO (S3-compatible) or Supabase Storage
+
+1) Configure .env with your provider values (see placeholders)
+2) Upload local images and generate a manifest of public URLs
+```bash
+# For MinIO
+PROVIDER=minio pnpm upload:images
+# Or for Supabase
+PROVIDER=supabase pnpm upload:images
+```
+3) Seed DB using the uploaded image URLs
+```bash
+pnpm seed:mongo:manifest
 ```
 
 Note: If using Atlas, set MONGO_URI in .env accordingly.

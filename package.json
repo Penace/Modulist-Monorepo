@@ -14,7 +14,9 @@
     "lint": "pnpm --filter modulist-backend lint && pnpm --filter modulist-frontend lint",
     "clean": "pnpm --filter modulist-backend clean && pnpm --filter modulist-frontend clean",
     "seed:images": "node scripts/seed-images.js",
+    "upload:images": "node scripts/upload-images.js",
     "seed:mongo": "node packages/backend/scripts/seed-remote.js",
+    "seed:mongo:manifest": "node packages/backend/scripts/seed-from-manifest.js",
     "test:e2e": "playwright test",
     "setup": "pnpm install && pnpm seed:images"
   },
