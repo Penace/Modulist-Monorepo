@@ -26,11 +26,12 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 console.log("📥 Upload route mounted");
 
+// Upload endpoint: accepts multipart images and stores locally
 router.post("/", upload.array("images"), async (req, res) => {
   try {
     const processedImages = [];
 
-    for (const file of req.files) {
+    for (const file of req.files || []) {
       const inputPath = file.path;
       const baseName = path.parse(file.originalname).name;
       const filename = `${Date.now()}-${baseName}.webp`;
@@ -50,6 +51,30 @@ router.post("/", upload.array("images"), async (req, res) => {
   } catch (err) {
     console.error("Image processing error:", err);
     res.status(500).json({ error: "Failed to process images" });
+  }
+});
+
+// Alternate endpoint: accepts an array of public image URLs (no file upload)
+router.post("/urls", async (req, res) => {
+  try {
+    const { urls } = req.body || {};
+    if (!Array.isArray(urls) || urls.length === 0) {
+      return res.status(400).json({ error: "Provide a non-empty array of URLs" });
+    }
+    // Basic validation for http(s) URLs
+    const sanitized = urls
+      .filter((u) => typeof u === "string")
+      .filter((u) => /^https?:\/\//i.test(u.trim()))
+      .map((u) => u.trim());
+
+    if (sanitized.length === 0) {
+      return res.status(400).json({ error: "No valid URLs provided" });
+    }
+
+    return res.json({ urls: sanitized });
+  } catch (err) {
+    console.error("URL processing error:", err);
+    res.status(500).json({ error: "Failed to accept URLs" });
   }
 });
 

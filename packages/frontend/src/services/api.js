@@ -57,10 +57,39 @@ export async function fetchItemsByStatus(status, userId) {
 // --- Publish
 export async function createItem(itemData) {
   try {
+    const payload = { ...itemData };
+
+    // If payload.images are File objects (from a form), upload them first
+    if (payload.images && payload.images.length && payload.images[0] instanceof File) {
+      const formData = new FormData();
+      for (const file of payload.images) formData.append('images', file);
+
+      const uploadRes = await fetch(`${IMAGE_BASE_URL}/api/uploads`, {
+        method: 'POST',
+        body: formData,
+      });
+      if (!uploadRes.ok) throw new Error('Image upload failed');
+      const { urls } = await uploadRes.json();
+      payload.images = urls;
+    }
+
+    // If payload.images are external URLs, validate through /urls helper
+    if (payload.images && payload.images.length && typeof payload.images[0] === 'string' && /^https?:\/\//i.test(payload.images[0])) {
+      const urlRes = await fetch(`${IMAGE_BASE_URL}/api/uploads/urls`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ urls: payload.images }),
+      });
+      if (urlRes.ok) {
+        const { urls } = await urlRes.json();
+        payload.images = urls;
+      }
+    }
+
     const res = await fetch(`${API_URL}/items`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(itemData),
+      body: JSON.stringify(payload),
     });
 
     if (!res.ok) {

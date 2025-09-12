@@ -136,6 +136,45 @@ modulist-monorepo/
 
 ## 🧪 Testing the Application
 
+### Seed MongoDB (optional but recommended)
+Use the following to seed a couple of users and items for a fast demo:
+
+```bash
+mongosh <<'EOF'
+use modulist
+// Admin user (password: password)
+db.users.insertOne({
+  email: "admin@example.com",
+  name: "Admin",
+  passwordHash: "$2a$10$Xk5FQjYiA1x1LxFZtBk8quyH.2z6d2J95o0A1xTt6M4A1rpx9k4y6",
+  role: "admin",
+  approved: true,
+  createdAt: new Date()
+})
+
+// Sample items using local uploads seeded images
+db.items.insertMany([
+  {
+    title: "Cozy Apartment",
+    price: 250000,
+    location: "City Center",
+    bedrooms: 2,
+    bathrooms: 1,
+    squareFootage: 80,
+    address: "123 Main St",
+    images: ["http://localhost:4000/uploads/house-1.png"],
+    description: "Great apartment",
+    propertyType: "apartment",
+    yearBuilt: 2015,
+    parkingAvailable: "Yes",
+    type: "sale",
+    status: "published",
+    createdAt: new Date()
+  }
+])
+EOF
+```
+
 1. **Start the application:** `pnpm dev`
 2. **Register a new user:** Navigate to signup page
 3. **Upload a property:** Use the "Publish" feature
