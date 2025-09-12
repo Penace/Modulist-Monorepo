@@ -7,14 +7,16 @@ provider and generates a manifest JSON with public URLs for use in DB seeding.
 Supported providers:
 - MinIO (S3-compatible)
 - Supabase Storage
-- 0x0.st (anonymous, no account)
-- Catbox (anonymous, no account)
+- 0x0.st (anonymous, no account; may rate-limit)
+- Catbox (anonymous, no account; may rate-limit)
+- Telegra.ph (anonymous, no account; reliable for small images)
 
 Usage:
   PROVIDER=minio node scripts/upload-images.js
   PROVIDER=supabase node scripts/upload-images.js
   PROVIDER=0x0 node scripts/upload-images.js
   PROVIDER=catbox node scripts/upload-images.js
+  PROVIDER=telegra node scripts/upload-images.js
 
 Env required for MinIO:
   MINIO_ENDPOINT, MINIO_ACCESS_KEY, MINIO_SECRET_KEY, MINIO_BUCKET, MINIO_PUBLIC_BASE_URL
@@ -25,11 +27,10 @@ Env required for Supabase:
 
 const fs = require('fs');
 const path = require('path');
-const fetch = global.fetch || ((...args) => import('node-fetch').then(({default: f}) => f(...args)));
-const FormData = global.FormData || require('form-data');
-const { Blob } = global;
+const fetch = ((...args) => import('node-fetch').then(({default: f}) => f(...args)));
+const FormData = require('form-data');
 
-const PROVIDER = process.env.PROVIDER || '0x0';
+const PROVIDER = process.env.PROVIDER || 'telegra';
 const SOURCE_DIR = process.env.SOURCE_DIR || path.join(__dirname, '..', 'uploads');
 const OUTPUT = process.env.OUTPUT || path.join(__dirname, '..', 'uploads-manifest.json');
 
@@ -66,13 +67,14 @@ async function uploadMinio(files) {
 async function uploadSupabase(files) {
   const { createClient } = require('@supabase/supabase-js');
   const url = process.env.SUPABASE_URL;
-  const key = process.env.SUPABASE_ANON_KEY;
+  const key = process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_KEY;
   const bucket = process.env.SUPABASE_BUCKET;
+  const prefix = process.env.SUPABASE_PREFIX || 'modulist/';
   if (!url || !key || !bucket) throw new Error('Missing Supabase env vars');
   const supabase = createClient(url, key);
   const urls = [];
   for (const file of files) {
-    const filename = `modulist/${Date.now()}-${path.basename(file)}`;
+    const filename = `${prefix}${Date.now()}-${path.basename(file)}`;
     const data = fs.readFileSync(file);
     const { error } = await supabase.storage.from(bucket).upload(filename, data, {
       contentType: getMime(file),
@@ -88,10 +90,12 @@ async function uploadSupabase(files) {
 async function upload0x0(files) {
   const urls = [];
   for (const file of files) {
-    const buffer = fs.readFileSync(file);
     const form = new FormData();
-    form.append('file', new Blob([buffer], { type: getMime(file) }), path.basename(file));
-    const res = await fetch('https://0x0.st', { method: 'POST', body: form });
+    form.append('file', fs.createReadStream(file), {
+      filename: path.basename(file),
+      contentType: getMime(file),
+    });
+    const res = await fetch('https://0x0.st', { method: 'POST', body: form, headers: { ...(form.getHeaders?.() || {}), 'User-Agent': 'curl/8.0' } });
     if (!res.ok) throw new Error(`0x0 upload failed: ${res.status}`);
     const text = (await res.text()).trim();
     urls.push(text);
@@ -102,14 +106,34 @@ async function upload0x0(files) {
 async function uploadCatbox(files) {
   const urls = [];
   for (const file of files) {
-    const buffer = fs.readFileSync(file);
     const form = new FormData();
     form.append('reqtype', 'fileupload');
-    form.append('fileToUpload', new Blob([buffer], { type: getMime(file) }), path.basename(file));
-    const res = await fetch('https://catbox.moe/user/api.php', { method: 'POST', body: form });
+    form.append('fileToUpload', fs.createReadStream(file), {
+      filename: path.basename(file),
+      contentType: getMime(file),
+    });
+    const res = await fetch('https://catbox.moe/user/api.php', { method: 'POST', body: form, headers: { ...(form.getHeaders?.() || {}), 'User-Agent': 'curl/8.0' } });
     if (!res.ok) throw new Error(`Catbox upload failed: ${res.status}`);
     const text = (await res.text()).trim();
     urls.push(text);
+  }
+  return urls;
+}
+
+async function uploadTelegra(files) {
+  const urls = [];
+  for (const file of files) {
+    const form = new FormData();
+    form.append('file', fs.createReadStream(file), {
+      filename: path.basename(file),
+      contentType: getMime(file),
+    });
+    const res = await fetch('https://telegra.ph/upload', { method: 'POST', body: form, headers: { ...(form.getHeaders?.() || {}), 'User-Agent': 'curl/8.0' } });
+    if (!res.ok) throw new Error(`Telegra upload failed: ${res.status}`);
+    const json = await res.json();
+    if (!Array.isArray(json) || !json[0]?.src) throw new Error('Telegra unexpected response');
+    const src = json[0].src.startsWith('/') ? `https://telegra.ph${json[0].src}` : json[0].src;
+    urls.push(src);
   }
   return urls;
 }
@@ -144,6 +168,7 @@ function listImages(dir) {
   else if (PROVIDER === 'supabase') urls = await uploadSupabase(files);
   else if (PROVIDER === '0x0') urls = await upload0x0(files);
   else if (PROVIDER === 'catbox') urls = await uploadCatbox(files);
+  else if (PROVIDER === 'telegra') urls = await uploadTelegra(files);
   else throw new Error('Unsupported PROVIDER: ' + PROVIDER);
 
   fs.writeFileSync(OUTPUT, JSON.stringify({ images: urls }, null, 2));
