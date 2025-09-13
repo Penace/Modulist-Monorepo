@@ -26,9 +26,14 @@ export default function ItemCard({ item, prefix = "items" }) {
     }
   };
 
-  // Fallback if images are empty or undefined, handle both uploads and public assets
+  // Fallback if images are empty or undefined, handle uploads, assets, and external URLs
   const getImageUrl = (imagePath) => {
     if (!imagePath) return "/assets/fallback.jpg";
+    
+    // Handle full external URLs (like Supabase)
+    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+      return imagePath;
+    }
     
     if (imagePath.startsWith('/uploads/')) {
       return `${VITE_IMAGE_BASE_URL}${imagePath}`;

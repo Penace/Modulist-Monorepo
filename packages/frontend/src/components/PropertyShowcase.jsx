@@ -4,6 +4,27 @@ import { useScrollParallax } from "../hooks/useScrollParallax.js";
 import SectionDivider from "./common/SectionDivider";
 import { fetchItemsByTag } from "../services/api";
 
+// Helper function to handle different image URL types
+const getImageUrl = (imagePath) => {
+  if (!imagePath) return "/assets/fallback.jpg";
+  
+  // Handle full external URLs (like Supabase)
+  if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+    return imagePath;
+  }
+  
+  if (imagePath.startsWith('/uploads/')) {
+    const VITE_IMAGE_BASE_URL = import.meta.env.VITE_IMAGE_BASE_URL || "http://localhost:4000";
+    return `${VITE_IMAGE_BASE_URL}${imagePath}`;
+  }
+  
+  if (imagePath.startsWith('/assets/')) {
+    return imagePath;
+  }
+  
+  return `/assets/${imagePath}`;
+};
+
 export default function PropertyShowcase({ id, images, title, description }) {
   const showcaseRef = useRef(null);
 
@@ -19,7 +40,7 @@ export default function PropertyShowcase({ id, images, title, description }) {
 
   const backgroundImage =
     images && images.length > 0
-      ? `/assets/${images[0]}`
+      ? getImageUrl(images[0])
       : "/assets/fallback.jpg";
 
   return (

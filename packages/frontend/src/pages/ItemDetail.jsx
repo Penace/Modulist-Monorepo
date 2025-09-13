@@ -10,6 +10,26 @@ const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000/api";
 const VITE_IMAGE_BASE_URL =
   import.meta.env.VITE_IMAGE_BASE_URL || "http://localhost:4000";
 
+// Helper function to handle different image URL types
+const getImageUrl = (imagePath) => {
+  if (!imagePath) return "/assets/fallback.jpg";
+  
+  // Handle full external URLs (like Supabase)
+  if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+    return imagePath;
+  }
+  
+  if (imagePath.startsWith('/uploads/')) {
+    return `${VITE_IMAGE_BASE_URL}${imagePath}`;
+  }
+  
+  if (imagePath.startsWith('/assets/')) {
+    return imagePath;
+  }
+  
+  return `/assets/${imagePath}`;
+};
+
 export default function ItemDetail() {
   const { id } = useParams();
   const { user } = useAuth(); // Access the current user from the auth context
@@ -308,10 +328,7 @@ export default function ItemDetail() {
           >
             <img
               id="heroImage"
-              src={`/assets/${item.images[currentImageIndex].replace(
-                /^\/+/,
-                ""
-              )}`}
+              src={getImageUrl(item.images[currentImageIndex])}
               alt="Item"
               loading="lazy"
               className={`w-full h-full object-cover pointer-events-none transition-opacity duration-700 ease-in-out ${
@@ -322,9 +339,7 @@ export default function ItemDetail() {
               id="magnifier"
               className="hidden absolute w-[250px] h-[250px] border-[0.5px] border-teal-700/70 rounded-lg pointer-events-none z-30"
               style={{
-                backgroundImage: `url(/assets/${item.images[
-                  currentImageIndex
-                ].replace(/^\/+/, "")})`,
+                backgroundImage: `url(${getImageUrl(item.images[currentImageIndex])})`,
                 backgroundRepeat: "no-repeat",
                 backgroundSize: "1000% 1000%",
                 display: "none",
@@ -383,7 +398,7 @@ export default function ItemDetail() {
               } hover:scale-105`}
             >
               <img
-                src={`/assets/${img.replace(/^\/+/, "")}`}
+                src={getImageUrl(img)}
                 alt={`Thumbnail ${index + 1}`}
                 loading="lazy"
                 className="object-cover w-full h-full transition-transform duration-300 ease-in-out hover:scale-110"
@@ -529,10 +544,7 @@ export default function ItemDetail() {
           onClick={() => setIsModalOpen(false)}
         >
           <img
-            src={`/assets/${item.images[currentImageIndex].replace(
-              /^\/+/,
-              ""
-            )}`}
+            src={getImageUrl(item.images[currentImageIndex])}
             alt="Full preview"
             loading="lazy"
             className={`max-w-full max-h-full object-contain transition-transform duration-300 ease-in-out ${

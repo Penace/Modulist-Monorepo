@@ -77,6 +77,14 @@ const itemSchema = new mongoose.Schema({
     },
   },
   availableFrom: { type: Date },
+  features: {
+    type: [String],
+    default: [],
+  },
+  amenities: {
+    type: [String], 
+    default: [],
+  },
   status: {
     type: String,
     enum: ["draft", "published", "archived"],

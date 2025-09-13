@@ -33,14 +33,15 @@ app.use(cors());
 app.use(morgan("dev"));
 app.use(express.json());
 
-// Health check before auth middleware
+// Health check and debug routes (no auth required)
 app.get("/health", (_req, res) => res.json({ status: "ok" }));
+app.get("/debug", (_req, res) => res.json({ message: "Debug endpoint working", timestamp: new Date() }));
+app.get("/test", (req, res) => {
+  res.send("✅ API is up");
+});
 
-// Auth middleware
-app.use(authenticateToken); // Verify tokens and attach user info
-
-// Routes
-app.use("/api/items", itemRoutes);
+// Auth middleware for API routes only
+app.use("/api", authenticateToken); // Verify tokens and attach user info
 
 // Routes
 app.use("/api/items", itemRoutes);
@@ -52,10 +53,6 @@ app.use("/api/uploads", uploadRouter);
 const uploadsPath = path.join(__dirname, '../../uploads');
 app.use("/uploads", express.static(uploadsPath));
 
-// Basic route test (runs even if DB fails)
-app.get("/test", (req, res) => {
-  res.send("✅ API is up");
-});
 
 // MongoDB Connection
 mongoose

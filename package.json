@@ -15,6 +15,7 @@
     "clean": "pnpm --filter modulist-backend clean && pnpm --filter modulist-frontend clean",
     "seed:images": "node scripts/seed-images.js",
     "upload:images": "node scripts/upload-images.js",
+    "upload:images:slugs": "node scripts/upload-images-by-slug.js",
     "seed:mongo": "node packages/backend/scripts/seed-remote.js",
     "seed:mongo:manifest": "node packages/backend/scripts/seed-from-manifest.js",
     "test:e2e": "playwright test",
@@ -28,6 +29,7 @@
     "@playwright/test": "^1.47.2",
     "node-fetch": "^3.3.2",
     "form-data": "^4.0.0",
+    "dotenv": "^16.4.5",
     "@aws-sdk/client-s3": "^3.637.0",
     "@supabase/supabase-js": "^2.45.4"
   },

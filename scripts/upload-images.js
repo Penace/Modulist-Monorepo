@@ -27,6 +27,24 @@ Env required for Supabase:
 
 const fs = require('fs');
 const path = require('path');
+const dotenv = require('dotenv');
+// Load env from repo root explicitly
+dotenv.config({ path: path.join(__dirname, '..', '.env') });
+// Also support lines prefixed with "export " in .env
+try {
+  const envRaw = fs.readFileSync(path.join(__dirname, '..', '.env'), 'utf8');
+  envRaw.split(/\r?\n/).forEach((line) => {
+    const m = line.match(/^\s*export\s+([A-Za-z_][A-Za-z0-9_]*)=(.*)$/);
+    if (m) {
+      const key = m[1];
+      let val = m[2];
+      if ((val.startsWith('"') && val.endsWith('"')) || (val.startsWith('\'') && val.endsWith('\''))) {
+        val = val.slice(1, -1);
+      }
+      if (!process.env[key]) process.env[key] = val;
+    }
+  });
+} catch (_) {}
 const fetch = ((...args) => import('node-fetch').then(({default: f}) => f(...args)));
 const FormData = require('form-data');
 
@@ -70,7 +88,10 @@ async function uploadSupabase(files) {
   const key = process.env.SUPABASE_ANON_KEY || process.env.SUPABASE_KEY;
   const bucket = process.env.SUPABASE_BUCKET;
   const prefix = process.env.SUPABASE_PREFIX || 'modulist/';
-  if (!url || !key || !bucket) throw new Error('Missing Supabase env vars');
+  if (!url || !key || !bucket) {
+    console.error('Supabase config presence:', { url: !!url, key: !!key, bucket: !!bucket });
+    throw new Error('Missing Supabase env vars');
+  }
   const supabase = createClient(url, key);
   const urls = [];
   for (const file of files) {
